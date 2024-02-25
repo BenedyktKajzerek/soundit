@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'soundit/css/style.css' %}">
+
+    <!-- JavaScript -->
+    <script src="{% static 'soundit/css/script.js' %}"></script>
+
+    {% block head %}{% endblock %}
+
+    <title>{% block title %}Soundit{% endblock %}</title>
+</head>
+<body>
+    
+    <!-- Nav on top -->
+    <nav>
+        <a href="{% url 'index' %}">Soundit</a>
+
+        <div>
+            <ul>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Custom body for different sites -->
+    <div class="body">
+        {% block body %}{% endblock %}
+    </div>
+
+</body>
+</html>
