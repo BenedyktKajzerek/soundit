@@ -1,0 +1,31 @@
+/* ===== Section 1 ===== */
+.section-1 {
+    height: 600px;
+    background-color: var(--_4);
+    padding-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.section-1 .container {
+
+}
+
+.section-2 {
+    height: 600px;
+    background-color: var(--_4);
+    border-top: 1px solid black;
+}
+
+/*
+=========================
+    Animations
+=========================
+*/
+
+/*
+=========================
+	Responsive Design
+=========================
+*/

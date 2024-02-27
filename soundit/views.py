@@ -8,7 +8,7 @@ from django.urls import reverse
 
 
 def index(request):
-    return HttpResponse("Hi, mom!")
+    return render(request, "soundit/index.html")
 
 
 def login(request):
@@ -30,3 +30,11 @@ def register(request):
 
     else:
         return render(request, "soundit/register.html")
+
+
+def about(request):
+    return render(request, "soundit/about.html")
+
+
+def transfer(request):
+    return render(request, "soundit/transfer.html")

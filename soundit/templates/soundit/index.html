@@ -1,9 +1,27 @@
 {% extends "soundit/layout.html" %}
 
-{% block head %}{% endblock %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'soundit/css/index.css' %}">
+{% endblock %}
 
 {% block body %}
 
-    <h1>Index</h1>
+    <div class="section-1">
+
+        <div class="container">
+            <h2>Transfer playlists from 
+                <span>Spotify</span> to 
+                <span>YouTube</span>
+            </h2>
+        </div>
+
+    </div>
+
+    <div class="section-2">
+
+
+    </div>
 
 {% endblock %}

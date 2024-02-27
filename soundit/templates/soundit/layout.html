@@ -6,27 +6,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'soundit/media/logo.png' %}">
+
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'soundit/css/style.css' %}">
 
     <!-- JavaScript -->
-    <script src="{% static 'soundit/css/script.js' %}"></script>
+    <script src="{% static 'soundit/js/script.js' %}"></script>
 
     {% block head %}{% endblock %}
 
-    <title>{% block title %}Soundit{% endblock %}</title>
+    <title>{% block title %}Soundit - Transfer playlists between streaming services{% endblock %}</title>
 </head>
 <body>
-    
-    <!-- Nav on top -->
-    <nav>
-        <a href="{% url 'index' %}">Soundit</a>
 
-        <div>
-            <ul>
-                
-            </ul>
-        </div>
+    <!-- Nav on top -->
+    <nav class="navbar">
+        <a class="logo" href="{% url 'index' %}">Soundit</a>
+
+        <ul>
+            <li>
+                <a href="{% url 'transfer' %}">Transer</a>
+            </li>
+            <li>
+                <a href="{% url 'about' %}">About</a>
+            </li>
+            <li>
+                <a href="{% url 'login' %}">Log in</a>
+            </li>
+            <li>
+                <a href="{% url 'register' %}">Get started</a>
+            </li>
+        </ul>
     </nav>
 
     <!-- Custom body for different sites -->
