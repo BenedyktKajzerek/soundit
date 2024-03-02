@@ -9,6 +9,9 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'soundit/media/logo.png' %}">
 
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'soundit/css/style.css' %}">
 
@@ -22,29 +25,78 @@
 <body>
 
     <!-- Nav on top -->
-    <nav class="navbar">
+    <header>
         <a class="logo" href="{% url 'index' %}">Soundit</a>
+        
+        <input type="checkbox" id="toggle-mobile-nav">
+        <label for="toggle-mobile-nav" class="hamburger">
+            <i class="fa-solid fa-bars" id="menu-icon"></i>
+            <i class="fa-solid fa-xmark" id="close-icon"></i>
+        </label>
 
-        <ul>
-            <li>
-                <a href="{% url 'transfer' %}">Transer</a>
-            </li>
-            <li>
-                <a href="{% url 'about' %}">About</a>
-            </li>
-            <li>
-                <a href="{% url 'login' %}">Log in</a>
-            </li>
-            <li>
-                <a href="{% url 'register' %}">Get started</a>
-            </li>
-        </ul>
-    </nav>
+        <nav class="nav">
+            <ul>
+                <li style="--i:0;">
+                    <a href="{% url 'transfer' %}">Transfer</a>
+                </li>
+                <li style="--i:1;">
+                    <a href="{% url 'about' %}">About</a>
+                </li>
+                <li style="--i:2;">
+                    <a href="{% url 'login' %}" class="btn-login">Log in</a>
+                </li>
+                <li style="--i:3;">
+                    <a href="{% url 'register' %}" class="btn-getStarted">Get started</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
     <!-- Custom body for different sites -->
     <div class="body">
         {% block body %}{% endblock %}
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <nav class="footer-nav">
+            <div class="footer-logo">
+                <a href="#">
+                    <img src="{% static 'soundit/media/logo.png' %}" alt="logo">
+                </a>
+            </div>
+
+            <div class="footer-links">
+                <ul>
+                    <li>
+                        <a href="#">About us</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact us</a>
+                    </li>
+                    <li>
+                        <a href="#">Developers (API)</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="footer-cr">
+            <div class="cr-items">
+                <span>&copy; 2024 Soundit</span>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of use</a>
+            </div>
+
+            <div class="cr-socials">
+                <a href="#"><i class="fa-brands fa-square-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

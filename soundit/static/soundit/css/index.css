@@ -1,8 +1,8 @@
 /* ===== Section 1 ===== */
 .section-1 {
     height: 600px;
-    background-color: var(--_4);
-    padding-top: 100px;
+    background-color: var(--bg);
+    padding-top: 70px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +14,7 @@
 
 .section-2 {
     height: 600px;
-    background-color: var(--_4);
+    background-color: var(--bg2);
     border-top: 1px solid black;
 }
 
