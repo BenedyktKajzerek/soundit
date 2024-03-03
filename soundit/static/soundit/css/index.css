@@ -1,21 +1,140 @@
+.container {
+    width: 100%;
+    display: flex;
+    padding: 0 12px;
+}
+
 /* ===== Section 1 ===== */
 .section-1 {
-    height: 600px;
-    background-color: var(--bg);
+    width: 100%;
+    height: 500px;
+    background-image: radial-gradient(
+        rgb(49, 53, 66),
+        rgb(44, 48, 61),
+        rgb(34, 38, 51),
+        rgb(34, 38, 51),
+        rgb(34, 38, 51)
+    );
     padding-top: 70px;
     display: flex;
-    justify-content: center;
     align-items: center;
 }
 
 .section-1 .container {
-
+    flex-direction: column;
+    align-items: center;
 }
 
+.section-1 h1 {
+    width: 800px;
+    color: var(--white);
+    font-size: 52px;
+    text-align: center;
+}
+
+.section-1 h2 {
+    width: 800px;
+    color: var(--grey);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 18px;
+}
+
+.spotify {
+    color: #1DB954;
+    font-size: inherit;
+    margin: 0;
+}
+
+.youtube {
+    color: #ff0000;
+    font-size: inherit;
+    margin: 0;
+}
+
+/* ===== Section 2 ===== */
+
 .section-2 {
+    width: 100%;
+    height: 300px;
+    background-color: var(--bg);
+    display: flex;
+}
+
+.section-2 .container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-2 .logos-title {
+    position: relative;
+    color: var(--grey);
+}
+
+.section-2 .logos-title::before,
+.section-2 .logos-title::after {
+    content: "";
+    display: block;
+    width: 150px;
+    height: 1px;
+    background: var(--grey);
+    top: 50%;
+    position: absolute;
+    opacity: .2;
+}
+
+.section-2 .logos-title::before {
+    left: -100%;
+}
+
+.section-2 .logos-title::after {
+    right: -100%;
+}
+
+
+.logos-div {
+    display: flex;
+    margin-top: 12px;
+}
+
+.logo-element {
+    width: 140px;
+    height: 140px;
+    margin: 12px;
+    border: 1px solid black;
+}
+
+/* ===== Section 3 ===== */
+
+.section-3 {
     height: 600px;
     background-color: var(--bg2);
-    border-top: 1px solid black;
+}
+
+.section-3 .container {
+    flex-direction: column;
+    align-items: center;
+}
+
+.services-div {
+    text-align: center;
+}
+
+.services-div .amount {
+    color: var(--primary);
+    font-size: 32px;
+}
+
+.services-div h2 {
+    color: var(--white);
+    font-size: 32px;
+}
+
+.services-div p {
+    color: var(--white);
+    font-size: 18px;
 }
 
 /*

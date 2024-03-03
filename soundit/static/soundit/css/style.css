@@ -29,14 +29,13 @@ html,
 body {
 	height:100%;
     font-family: Helvetica, Arial, sans-serif;
-
 }
 
 /* ===== Nav Top ===== */
 
 header {
     width: 100%;
-    height: 70px;
+    height: 80px;
     position: fixed;
     top: 0px;
     left: 0px;
@@ -122,6 +121,10 @@ header {
     text-decoration: none;
     font-size: 32px;
     font-weight: 700;
+}
+
+.header-scrolled {
+    background-color: var(--bg);
 }
 
 /* ===== Footer ===== */
@@ -281,10 +284,6 @@ footer {
 	JavaScript Classes
 =========================
 */
-
-.display-none {
-    display: none;
-}
 
 .display-block {
     display: block;
