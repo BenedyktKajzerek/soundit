@@ -7,10 +7,14 @@
 /* ===== Section 1 ===== */
 .section-1 {
     width: 100%;
-    height: 500px;
+    height: 600px;
     background-image: radial-gradient(
-        rgb(49, 53, 66),
-        rgb(44, 48, 61),
+        circle,
+        rgb(40, 44, 57),
+        rgb(38, 42, 55),
+        rgb(36, 40, 53),
+        rgb(34, 38, 51),
+        rgb(34, 38, 51),
         rgb(34, 38, 51),
         rgb(34, 38, 51),
         rgb(34, 38, 51)
@@ -77,7 +81,7 @@
 .section-2 .logos-title::after {
     content: "";
     display: block;
-    width: 150px;
+    width: 100px;
     height: 1px;
     background: var(--grey);
     top: 50%;
@@ -86,31 +90,43 @@
 }
 
 .section-2 .logos-title::before {
-    left: -100%;
+    left: -75%;
 }
 
 .section-2 .logos-title::after {
-    right: -100%;
+    right: -75%;
 }
 
 
 .logos-div {
-    display: flex;
+    width: 100%;
     margin-top: 12px;
+    display: flex;
 }
 
 .logo-element {
+    position: relative;
     width: 140px;
     height: 140px;
+    border-radius: 10px;
+    background: linear-gradient(-30deg, rgba(25, 29, 39) 12%, hsla(0, 0%, 100%, .2));
     margin: 12px;
-    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    box-shadow: 5px 6px 12px -10px rgba(25, 29, 39, 1);
+}
+
+.logo-img {
+    width: 100%;
+    height: 70px;
+    fill: white;
 }
 
 /* ===== Section 3 ===== */
 
 .section-3 {
     height: 600px;
-    background-color: var(--bg2);
+    background-color: var(--white);
 }
 
 .section-3 .container {
