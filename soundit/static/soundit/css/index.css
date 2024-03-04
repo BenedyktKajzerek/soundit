@@ -1,13 +1,12 @@
 .container {
     width: 100%;
     display: flex;
-    padding: 0 12px;
 }
 
 /* ===== Section 1 ===== */
 .section-1 {
     width: 100%;
-    height: 600px;
+    height: 672px;
     background-image: radial-gradient(
         circle,
         rgb(40, 44, 57),
@@ -25,13 +24,14 @@
 }
 
 .section-1 .container {
+    display: flex;
     flex-direction: column;
     align-items: center;
     height: 100%;
 }
 
 .section-1 h1 {
-    width: 800px;
+    width: 90%;
     color: var(--white);
     font-size: 52px;
     text-align: center;
@@ -39,7 +39,7 @@
 }
 
 .section-1 h2 {
-    width: 800px;
+    width: 90%;
     color: var(--grey);
     text-align: center;
     font-size: 18px;
@@ -64,7 +64,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 72px;
+    margin-top: 120px;
 }
 
 .app-info div {
@@ -96,10 +96,10 @@
 }
 
 .section-2 .container {
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0;
 }
 
 .section-2 .logos-title {
@@ -147,7 +147,7 @@
 
 .logo-element {
     position: relative;
-    width: 140px;
+    width: 18vw;
     height: 140px;
     border-radius: 10px;
     background: linear-gradient(-30deg, rgba(25, 29, 39) 12%, hsla(0, 0%, 100%, .2));
@@ -166,11 +166,19 @@
 /* ===== Section 3 ===== */
 
 .section-3 {
+    width: 100%;
+    height: 422px;
+}
+
+/* ===== Section 4 ===== */
+
+.section-4 {
     height: 600px;
     background-color: var(--white);
 }
 
-.section-3 .container {
+.section-4 .container {
+    display: flex;
     flex-direction: column;
     align-items: center;
 }
@@ -194,6 +202,25 @@
     font-size: 18px;
 }
 
+/* ===== Section 5 ===== */
+
+.section-5 {
+    width: 100%;
+    height: 422px;
+}
+
+.section-5 .container {
+}
+
+
+/* ===== Section 10 ===== */
+
+.section-6 {
+    width: 100%;
+    height: 600px;
+    background-color: var(--white);
+}
+
 /*
 =========================
     Animations
@@ -215,17 +242,43 @@
 =========================
 */
 
+@media all and (min-width: 1200px) {
+    /* === Section 1 === */
+    .section-1 h1 {
+        font-size: 42px;
+    }
+
+    /* === Section 2 === */
+}
+
 @media all and (max-width: 992px) {
-    .app-info {
+    /* === Section 1 === */
+    .section-1 h1 {
+        font-size: 42px;
     }
 }
 
 @media all and (max-width: 768px) {
+    /* === Section 1 === */
+    .section-1 h1 {
+        font-size: 36px;
+    }
+    
     .app-info {
         flex-direction: column;
+        margin-top: 80px;
     }
-
+    
     .app-info div {
-        margin: 12px 0;
+        margin: 10px 0;
     }
+    
+    /* === Section 2 === */
+    .logo-element {
+        width: 140px;
+    }
+}
+
+.nowrap {
+    white-space: nowrap;
 }
