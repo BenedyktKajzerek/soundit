@@ -59,7 +59,7 @@ header {
     width: 130px;
 }
 
-.nav li::after,
+/* .nav li::after,
 .nav li:last-child::before {
     content: "";
     display: block;
@@ -75,7 +75,7 @@ header {
 
 .nav li:last-child::before {
     top: 100%;
-}
+} */
 
 .nav li a {
     text-decoration: none;
