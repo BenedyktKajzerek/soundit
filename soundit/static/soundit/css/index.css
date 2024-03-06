@@ -172,7 +172,7 @@
 /* ===== Section 4 ===== */
 
 .section-4 {
-    height: 900px;
+    height: 1000px;
     background-color: var(--white);
 }
 
@@ -232,13 +232,15 @@
 }
 
 #searchService {
-    width: 930px;
+    width: 938px;
+    border-radius: 0 12px 12px 0;
     height: 100%;
     margin-left: 60px;
-    padding: 16px 22px 16px 4px;
+    padding: 16px 22px 16px 0;
     font-size: 20px;
     border: none;
     outline: none;
+
 }
 
 .services-div {
@@ -274,10 +276,17 @@
     background-color: rgb(250, 250, 250);
 }
 
+
 .service div {
     width: 340px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.mini-logo {
+    width: 60px;
+    height: 60px;
 }
 
 .service-btn {
