@@ -18,10 +18,10 @@
                 <span class="youtube">YouTube</span>
             </h1>
 
-            <h2>
+            <h3>
                 Quickly convert your favorites songs and playlists
                 between different music services with Soundit.
-            </h2>
+            </h3>
 
             <div class="app-info">
                 <div>
@@ -100,26 +100,35 @@
     <section class="section-4">
         <div class="container">
 
-            <div class="services-div">
-                <h2><span class="amount">1 </span>Available conversions</h2>
-    
-                <p>Search for available music services on Soundit using the list below.</p>
+            <div class="services-info">
+                <h2><span class="amount">1 </span>Available Conversions</h2>
+                
+                <p>Search for available music services on Soundit.</p>
             </div>
             
-            <div>
-                <input type="text" placeholder="Search for music service">
-    
-                <a href="#">
-                    <div>Spotify</div>
-                </a>
-                <a href="#">
-                    <div>Youtube</div>
+            <label for="searchService" class="search-service">
+                <div class="search-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input id="searchService" type="text" placeholder="Search for music service">
+            </label>
+            
+            <div class="services-div">
+                <a href="#" class="service-link">
+                    <div class="service">
+                        <div>
+                            <img src="" alt="logo">
+                            <img src="" alt="logo">
+                            Spotify to YouTube
+                        </div>
+                        <button class="service-btn">Convert</button>
+                    </div>
                 </a>
             </div>
-
+            
         </div>
     </section>
-
+    
     <section class="section-5">
         <div class="container">
             <img src="{% static 'soundit/media/wave-bottom.svg' %}" alt="">
@@ -129,9 +138,7 @@
     <section class="section-6">
         <div class="container">
 
-            <div>
-                FAQ
-            </div>
+
 
         </div>
     </section>
