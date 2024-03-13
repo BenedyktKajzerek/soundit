@@ -3,7 +3,7 @@
     display: flex;
 }
 
-/* ===== Section 1 ===== */
+/* ===== Section 1 (hero) ===== */
 .section-1 {
     width: 100%;
     height: 672px;
@@ -86,7 +86,7 @@
     margin-right: 6px;
 }
 
-/* ===== Section 2 ===== */
+/* ===== Section 2 (music services) ===== */
 
 .section-2 {
     width: 100%;
@@ -163,7 +163,7 @@
     fill: white;
 }
 
-/* ===== Section 3 ===== */
+/* ===== Section 3 (wave-top) ===== */
 
 .section-3 {
     width: 100%;
@@ -173,7 +173,7 @@
     width: inherit;
 }
 
-/* ===== Section 4 ===== */
+/* ===== Section 4 (available convertions) ===== */
 
 .section-4 {
     height: 1000px;
@@ -312,7 +312,7 @@
     color: var(--white);
 }
 
-/* ===== Section 5 ===== */
+/* ===== Section 5 (wave-bottom) ===== */
 
 .section-5 {
     width: 100%;
@@ -322,7 +322,7 @@
     width: inherit;
 }
 
-/* ===== Section 6 ===== */
+/* ===== Section 6 (testimonials) ===== */
 
 .section-6 {
     width: 100%;
@@ -463,7 +463,7 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, .5);
 }
 
-/* ===== Section 7 ===== */
+/* ===== Section 7 (songs transfered) ===== */
 
 .section-7 {
     width: 100%;
@@ -493,18 +493,18 @@
 */
 
 @media all and (max-width: 1200px) {
-    /* === Section 1 === */
+    /* === Section 1 (hero) === */
     .section-1 h1 {
         font-size: 42px;
     }
 
-    /* === Section 2 === */
+    /* === Section 2 (available services) === */
 }
 
 @media all and (max-width: 992px) {
-    /* === Section 1 === */
+    /* === Section 1 (hero) === */
 
-    /* === Section 6 === */
+    /* === Section 6 (testimonials) === */
     #s1:checked~.cards #slide1,
     #s2:checked~.cards #slide2,
     #s3:checked~.cards #slide3,
@@ -553,7 +553,7 @@
 }
 
 @media all and (max-width: 768px) {
-    /* === Section 1 === */
+    /* === Section 1 (hero) === */
     .section-1 h1 {
         font-size: 36px;
     }
@@ -567,12 +567,12 @@
         margin: 10px 0;
     }
     
-    /* === Section 2 === */
+    /* === Section 2 (available services) === */
     .logo-element {
         width: 140px;
     }
     
-    /* === Section 4 === */
+    /* === Section 4 (available convertions) === */
     .service div {
         width: 300px;
     }

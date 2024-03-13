@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import AuthURL
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -8,4 +9,8 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('about', views.about, name='about'),
     path('transfer', views.transfer, name='transfer'),
+    path('get-auth-url', AuthURL.as_view()),
+    
+    # WebApp (when user is logged in)
+    path('webapp/', views.webapp, name='webapp'),
 ]

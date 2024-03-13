@@ -1,1 +1,4 @@
 Django
+python-dotenv
+djangorestframework
+requests
