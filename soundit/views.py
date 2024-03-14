@@ -119,9 +119,9 @@ def register(request):
         return render(request, "soundit/register.html")
 
 
-@login_required
-def webapp(request):
-    return render(request, "soundit/webapp.html")
+# @login_required
+def profile(request):
+    return render(request, "soundit/profile.html")
 
 def about(request):
     return render(request, "soundit/about.html")

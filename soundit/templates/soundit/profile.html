@@ -1,0 +1,145 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'soundit/media/logo.png' %}">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'soundit/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'soundit/css/profile.css' %}">
+
+    <!-- JavaScript -->
+    <script src="{% static 'soundit/js/script.js' %}"></script>
+
+    <title>Soundit Profile</title>
+</head>
+<body>
+
+    <div class="profile">
+
+        <!-- Services Section -->
+
+        <div class="services-wrapper">
+            
+            <div class="logo">
+                <img src="{% static 'soundit/media/logo.png' %}" alt="logo">
+            </div>
+
+            <div class="services">
+
+                <div class="service">
+                    <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
+                </div>
+                <div class="service">
+                    <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
+                </div>
+                <div class="add-service service">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+            </div>
+        
+        </div>
+        
+        <!-- Nav Section -->
+
+        <div class="nav-wrapper">
+
+            <div class="account">
+                <div>
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span>{{ Username }}Username</span>
+                </div>
+                <div class="settings">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+            </div>
+            
+            <nav class="nav">
+
+                <div class="library">
+
+                    <div class="lib-divider">
+                        <span>Library</span>
+                    </div>
+
+                    <div class="lib-div playlists">
+                        <span>Playlists</span>
+                        <div class="lib-num">{{ 66 }}</div>
+                    </div>
+                    <div class="lib-div tracks">
+                        <span>Tracks</span>
+                        <div class="lib-num">{{ 291 }}</div>
+                    </div>
+                    <div class="lib-div albums">
+                        <span>Albums</span>
+                        <div class="lib-num">{{ 28 }}</div>
+                    </div>
+                    <div class="lib-div artists">
+                        <span>Artists</span>
+                        <div class="lib-num">{{ 57 }}</div>
+                    </div>
+
+                </div>
+
+                <div class="statistics">
+
+                    <div class="stats-divider">
+                        <span>Statistics</span>
+                    </div>
+
+                    <div class="stats-div playlists">
+                        <span>Transfered playlists</span>
+                        <div class="stats-num">{{ 16 }}</div>
+                    </div>
+                    <div class="stats-div tracks">
+                        <span>Transfered tracks</span>
+                        <div class="stats-num">{{ 524 }}</div>
+                    </div>
+                    <div class="stats-div albums">
+                        <span>Transfered albums</span>
+                        <div class="stats-num">{{ 10 }}</div>
+                    </div>
+                    <div class="stats-div artists">
+                        <span>Transfered artists</span>
+                        <div class="stats-num">{{ 7 }}</div>
+                    </div>
+
+                </div>
+
+            </nav>
+
+        </div>
+    
+        <!-- Main Section -->
+
+        <div class="main-wrapper">
+
+            <main class="main">
+
+                <div class="header">
+                    <h2>{{ Playlists }}</h2>
+                    <span>{{ 0 }} selected</span>
+                    <span>{{ 49 }} total</span>
+                </div>
+
+                <div class="header2">
+
+                </div>
+
+            </main>
+       
+        </div>
+            
+    </div>
+
+</body>
+</html>

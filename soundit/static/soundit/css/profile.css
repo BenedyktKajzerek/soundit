@@ -1,0 +1,169 @@
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    height: 100vh;
+}
+
+.profile {
+    height: 100%;
+    display: flex;
+}
+
+/* ===== Services Section ===== */
+
+.services-wrapper {
+    height: 100%;
+    width: 60px;
+    background-color: rgb(68, 68, 68)
+}
+
+.logo {
+    height: 60px;
+    width: 60px;
+    padding: 4px 0 0 2px;
+}
+
+.logo img {
+    height: 46px;
+    width: 46px;
+}
+
+.service {
+    width: 50px;
+    height: 50px;
+    margin: 12px auto;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.service img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+}
+
+.add-service {
+    background-color: aliceblue;
+    display: grid;
+    place-items: center;
+}
+
+.add-service i {
+    color: green;
+    font-size: 42px;
+    font-weight: 700;
+}
+
+/* ===== Nav Section ===== */
+
+.nav-wrapper {
+    height: 100%;
+    width: 300px;
+    background-color: rgb(100, 100, 100);
+}
+
+.nav > div {
+    margin-bottom: 32px;
+}
+
+.account {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(197, 197, 197);
+    padding: 0 10px;
+}
+
+.account > div:first-of-type > i {
+    font-size: 32px;
+}
+
+.account .settings {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background-color: grey;
+}
+
+.lib-divider,
+.stats-divider {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+.lib-divider::after,
+.stats-divider::after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 80px;
+    right: 0;
+    top: 50%;
+    background-color: grey;
+}
+
+.lib-divider::before,
+.stats-divider::before {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 80px;
+    left: 0;
+    top: 50%;
+    background-color: grey;
+}
+
+.lib-div,
+.stats-div {
+    height: 40px;
+    margin: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.lib-div:hover,
+.stats-div:hover {
+    background-color: grey;
+    border-left: 4px solid purple;
+    padding-left: 6px;
+}
+
+.lib-num,
+.stats-num {
+    background-color: rgb(87, 87, 87);
+    color: white;
+    min-width: 20px;
+    padding: 6px 8px;
+    border-radius: 50px;
+    text-align: center;
+}
+
+/* ===== Main Section ===== */
+
+.main-wrapper {
+    height: 100%;
+    width: calc(100% - 260px);
+}
+
+.header {
+    height: 60px;
+    background-color: grey;
+}
+
+.header2 {
+    height: 120px;
+    background-color: rgb(151, 151, 151);
+}

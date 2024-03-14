@@ -12,5 +12,5 @@ urlpatterns = [
     path('get-auth-url', AuthURL.as_view()),
     
     # WebApp (when user is logged in)
-    path('webapp/', views.webapp, name='webapp'),
+    path('profile/', views.profile, name='profile'),
 ]
