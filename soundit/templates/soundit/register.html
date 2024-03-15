@@ -1,60 +1,87 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soundit - Register</title>
+        
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'soundit/media/logo.png' %}">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'soundit/css/sign.css' %}">
+
+    <!-- JavaScript -->
+    
+    <title>Soundit | Register</title>
 </head>
 <body>
     
-    <h1>Register</h1>
+    <div class="container">
+        <div class="form-wrapper">
 
-    <form action="{% url 'register' %}" method="POST">
-        {% csrf_token %}
+            <h2>Sign up</h2>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <div class="input-icon">
-                <div>
-                    <i class="fa-regular fa-envelope"></i>
+            <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+        
+                <div class="form-group">
+                    <label for="email">
+                        <span>Email</span>
+                        <div class="input-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <input type="email" id="email" name="email" autofocus required>
+                    </label>
                 </div>
-                <input type="email" id="email" name="email" autofocus required>
-            </div>
-        </div>
+                
+                <div class="form-group">
+                    <label for="username">
+                        <span>Username</span>
+                        <div class="input-icon">
+                            <i class="fa-regular fa-user"></i>
+                        </div> 
+                        <input type="text" id="username" name="username" required>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <span>Password</span>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <input type="password" id="password" name="password" required>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmation">
+                        <span>Confirm password</span>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <input type="password" id="confirmation" name="confirmation" id="confirmation" required>
+                    </label>
+                </div>
         
-        <div class="form-group">
-            <label for="username">Username</label>
-            <div class="input-icon">
-                <i class="fa-regular fa-user"></i>
-                <input type="text" id="username" name="username" required>
-            </div>
-        </div>
+                <button class="submit-btn">Sign up</button>
+
+            </form>
         
-        <div class="form-group">
-            <label for="password">Password</label>
-            <div class="input-icon">
-                <i class="fa-solid fa-key"></i>
-                <input type="password" id="password" name="password" required>
+            <div class="sign-in">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
             </div>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
         </div>
-        
-        <div class="form-group">
-            <label for="confirmation">Confirm password</label>
-            <div class="input-icon">
-                <i class="fa-solid fa-key"></i>
-                <input type="password" id="confirmation" name="confirmation" id="confirmation" required>
-            </div>
-        </div>
-
-        <button>Sign up</button>
-    </form>
-
-    {% if error %}
-        <div>{{ error }}</div>
-    {% endif %}
-
-    <div>
-        Already have an account? <a href="{% url 'login' %}">Sign in</a>
     </div>
 
 </body>

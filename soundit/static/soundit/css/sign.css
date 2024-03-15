@@ -1,0 +1,138 @@
+:root {
+    --white: #fff;
+    --light-grey: #dfe7ec;
+    --grey: rgb(172, 177, 193);
+    --grey2: rgb(104, 108, 121);
+    --dark-grey: rgb(74, 78, 91);
+    --black: #000;
+
+    --bg2: rgb(25, 29, 39);
+    --bg: rgb(34, 38, 51);
+    
+
+    --primary: #7858A6;
+    --second: #5B4B8A;
+    --third: #4C3575;
+    --fourth: #371B58;
+    --fifth: #802bb1;
+    
+    --link: #1DA1F2;
+
+    --red: #ea2a1b;
+    --red2: #D14836;
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+	height: 100vh;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    background-color: rgb(48, 48, 48);
+}
+
+.form-wrapper {
+    width: 420px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    background-color: var(--bg);
+}
+
+h2 {
+    text-align: center;
+    color: var(--grey);
+    margin: 24px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    width: 90%;
+    margin: 12px 0;
+}
+
+.form-group span {
+    display: block;
+    color: var(--grey);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.form-group input {
+    width: 100%;
+    border: none;
+    outline: none;
+    color: var(--grey);
+    font-size: 18px;
+    padding: 12px 16px 12px 42px;
+    background-color: transparent;
+    border: 1px solid var(--dark-grey);
+    border-radius: 10px;
+}
+
+.form-group input:hover, 
+.form-group input:focus {
+    border-color: var(--grey2);
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    color: var(--grey2);
+    font-size: 20px;
+    top: 14px;
+    left: 12px;
+}
+
+.submit-btn {
+    width: 90%;
+    color: var(--light-grey);
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 32px; 
+    background-color: var(--primary);
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: var(--light-grey);
+    color: var(--black);
+}
+
+.sign-in {
+    width: 90%;
+    margin: 4px auto;
+    text-align: left;
+    color: var(--grey);
+    font-size: 14px;
+}
+
+.sign-in a {
+    text-decoration: none;
+    color: var(--link);
+}
