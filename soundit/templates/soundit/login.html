@@ -24,12 +24,14 @@
     <div class="container">
         <div class="form-wrapper">
 
+            <h2>Sign in</h2>
+
             <form action="{% url 'login' %}" method="POST">
                 {% csrf_token %}
         
                 <div class="form-group">
                     <label for="username">
-                        <span>Username</span>
+                        <span>Username OR Email</span>
                         <div class="input-icon">
                             <i class="fa-regular fa-user"></i>
                         </div>
@@ -47,17 +49,18 @@
                     </label>
                 </div>
                 
-                <button>Sign in</button>
+                <button class="submit-btn">Sign in</button>
+                
             </form>
-        
+
+            <div class="sign-other">
+                Don't have an account? <a href="{% url 'register' %}">Sign up</a>
+            </div>
+
             {% if error %}
                 <div>{{ error }}</div>
             {% endif %}
         
-            <div>
-                Don't have an account? <a href="{% url 'register' %}">Sign up</a>
-            </div>
-
         </div>
     </div>
 

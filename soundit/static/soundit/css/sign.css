@@ -74,7 +74,7 @@ form {
     color: var(--grey);
     font-size: 18px;
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .form-group input {
@@ -124,7 +124,7 @@ form {
     color: var(--black);
 }
 
-.sign-in {
+.sign-other {
     width: 90%;
     margin: 4px auto;
     text-align: left;
@@ -132,7 +132,7 @@ form {
     font-size: 14px;
 }
 
-.sign-in a {
+.sign-other a {
     text-decoration: none;
     color: var(--link);
 }
