@@ -1,3 +1,27 @@
+:root {
+    --white: #fff;
+    --light-grey: #dfe7ec;
+    --grey: rgb(172, 177, 193);
+    --grey2: rgb(104, 108, 121);
+    --dark-grey: rgb(74, 78, 91);
+    --black: #000;
+
+    --bg-dark: rgb(25, 29, 39);
+    --bg: rgb(34, 38, 51);
+    
+
+    --primary: #7858A6;
+    --second: #5B4B8A;
+    --third: #4C3575;
+    --fourth: #371B58;
+    --fifth: #802bb1;
+    
+    --link: #1DA1F2;
+
+    --red: #ea2a1b;
+    --red2: #D14836;
+}
+
 *,
 *::after,
 *::before {
@@ -19,15 +43,16 @@ body {
 /* ===== Services Section ===== */
 
 .services-wrapper {
+    position: relative;
     height: 100%;
-    width: 60px;
-    background-color: rgb(68, 68, 68)
+    width: 80px;
+    background-color: var(--bg);
 }
 
 .logo {
     height: 60px;
-    width: 60px;
-    padding: 4px 0 0 2px;
+    width: 100%;
+    padding: 12px 0 0 10px;
 }
 
 .logo img {
@@ -38,27 +63,33 @@ body {
 .service {
     width: 50px;
     height: 50px;
-    margin: 12px auto;
-    border-radius: 50px;
+    margin: 24px auto 0;
     cursor: pointer;
 }
 
 .service img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
+    border-radius: 12px;
 }
 
 .add-service {
-    background-color: aliceblue;
+    position: absolute;
     display: grid;
     place-items: center;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .add-service i {
-    color: green;
-    font-size: 42px;
+    color: var(--primary);
+    font-size: 28px;
     font-weight: 700;
+}
+
+.add-service:hover i {
+    font-size: 34px;
 }
 
 /* ===== Nav Section ===== */
@@ -66,8 +97,10 @@ body {
 .nav-wrapper {
     height: 100%;
     width: 300px;
-    background-color: rgb(100, 100, 100);
-}
+    color: var(--grey);
+    font-weight: 700;
+    background-color: var(--bg-dark);
+} 
 
 .nav > div {
     margin-bottom: 32px;
@@ -78,27 +111,39 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(197, 197, 197);
+    border-bottom: 2px solid var(--bg);
+    background-color: var(--bg-dark);
     padding: 0 10px;
 }
 
-.account > div:first-of-type > i {
+.account > div:first-of-type {
+    display: flex;
+    align-items: center;
+}
+
+.account > div:first-of-type i {
     font-size: 32px;
 }
 
-.account .settings {
+.account > div:first-of-type span {
+    margin: 2px 0 0 12px;
+}
+
+.settings {
     width: 32px;
     height: 32px;
     border-radius: 8px;
     display: grid;
     place-items: center;
-    background-color: grey;
+    background-color: var(--bg);
+    cursor: pointer;
 }
 
 .lib-divider,
 .stats-divider {
     position: relative;
     width: 100%;
+    margin: 24px 0 24px;
     text-align: center;
 }
 
@@ -110,7 +155,7 @@ body {
     width: 80px;
     right: 0;
     top: 50%;
-    background-color: grey;
+    background-color: var(--second);
 }
 
 .lib-divider::before,
@@ -121,7 +166,7 @@ body {
     width: 80px;
     left: 0;
     top: 50%;
-    background-color: grey;
+    background-color: var(--second);
 }
 
 .lib-div,
@@ -137,34 +182,75 @@ body {
 
 .lib-div:hover,
 .stats-div:hover {
-    background-color: grey;
-    border-left: 4px solid purple;
+    background-color: var(--bg);
+    border-left: 4px solid var(--second);
     padding-left: 6px;
 }
 
 .lib-num,
 .stats-num {
-    background-color: rgb(87, 87, 87);
-    color: white;
+    background-color: var(--second);
+    color: var(--light-grey);
     min-width: 20px;
     padding: 6px 8px;
     border-radius: 50px;
     text-align: center;
+    font-size: 14px;
 }
 
 /* ===== Main Section ===== */
 
 .main-wrapper {
+    position: relative;
     height: 100%;
     width: calc(100% - 260px);
 }
 
+.main {
+    position: relative;
+    height: 100%;
+}
+
 .header {
     height: 60px;
-    background-color: grey;
+    background-color: var(--bg-dark);
 }
 
 .header2 {
     height: 120px;
-    background-color: rgb(151, 151, 151);
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--bg-dark);
+}
+
+.search-playlist input {
+    width: 160px;
+    border: none;
+    outline: none;
+    color: var(--grey);
+    font-size: 18px;
+    padding: 4px 4px 4px 32px;
+    background-color: transparent;
+    border: 1px solid var(--second);
+    border-radius: 10px;
+}
+
+.search-playlist input:hover, 
+.search-playlist input:focus {
+    border-color: var(--grey2);
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    color: var(--grey2);
+    top: 7px;
+    left: 8px;
+}
+
+.content {
+    height: calc(100% - 180px);
+    background-color: var(--bg);
 }

@@ -29,7 +29,9 @@
         <div class="services-wrapper">
             
             <div class="logo">
-                <img src="{% static 'soundit/media/logo.png' %}" alt="logo">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'soundit/media/logo.png' %}" alt="logo">
+                </a>
             </div>
 
             <div class="services">
@@ -121,21 +123,34 @@
         <!-- Main Section -->
 
         <div class="main-wrapper">
-
             <main class="main">
 
                 <div class="header">
+
                     <h2>{{ Playlists }}</h2>
                     <span>{{ 0 }} selected</span>
                     <span>{{ 49 }} total</span>
+                
                 </div>
 
                 <div class="header2">
+                    
+                    <label for="searchPlaylist" class="search-playlist">
+                        <div class="input-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <input id="searchPlaylist" type="text" placeholder="Search">
+                    </label>
+                
+                </div>
 
+                <div class="content">
+
+                    a
+                
                 </div>
 
             </main>
-       
         </div>
             
     </div>
