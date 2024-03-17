@@ -72,19 +72,19 @@
                         <span>Library</span>
                     </div>
 
-                    <div class="lib-div playlists">
+                    <div class="lib-div">
                         <span>Playlists</span>
                         <div class="lib-num">{{ 66 }}</div>
                     </div>
-                    <div class="lib-div tracks">
+                    <div class="lib-div">
                         <span>Tracks</span>
                         <div class="lib-num">{{ 291 }}</div>
                     </div>
-                    <div class="lib-div albums">
+                    <div class="lib-div">
                         <span>Albums</span>
                         <div class="lib-num">{{ 28 }}</div>
                     </div>
-                    <div class="lib-div artists">
+                    <div class="lib-div">
                         <span>Artists</span>
                         <div class="lib-num">{{ 57 }}</div>
                     </div>
@@ -97,19 +97,19 @@
                         <span>Statistics</span>
                     </div>
 
-                    <div class="stats-div playlists">
+                    <div class="stats-div">
                         <span>Transfered playlists</span>
                         <div class="stats-num">{{ 16 }}</div>
                     </div>
-                    <div class="stats-div tracks">
+                    <div class="stats-div">
                         <span>Transfered tracks</span>
                         <div class="stats-num">{{ 524 }}</div>
                     </div>
-                    <div class="stats-div albums">
+                    <div class="stats-div">
                         <span>Transfered albums</span>
                         <div class="stats-num">{{ 10 }}</div>
                     </div>
-                    <div class="stats-div artists">
+                    <div class="stats-div">
                         <span>Transfered artists</span>
                         <div class="stats-num">{{ 7 }}</div>
                     </div>
@@ -127,26 +127,123 @@
 
                 <div class="header">
 
-                    <h2>{{ Playlists }}</h2>
-                    <span>{{ 0 }} selected</span>
-                    <span>{{ 49 }} total</span>
-                
+                    <div>
+                        <h2>Playlists{{ Playlists }}</h2>
+                        <h5>{{ 43 }} total | {{ 0 }} selected</h3>
+                    </div>
+                            
                 </div>
 
                 <div class="header2">
                     
-                    <label for="searchPlaylist" class="search-playlist">
-                        <div class="input-icon">
-                            <i class="fa-solid fa-magnifying-glass"></i>
+                    <div class="header2-container">
+                        <label class="select-div">
+                            <input type="checkbox" class="select-all"></input>
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="playlist-options">
+                            <button type="button" class="playlist-option">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                            </button>
+                            <button type="button" class="playlist-option">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
                         </div>
-                        <input id="searchPlaylist" type="text" placeholder="Search">
-                    </label>
-                
+                    </div>
+
+                    <div>
+                        <label for="searchPlaylist" class="search-playlist">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                            <input id="searchPlaylist" type="text" placeholder="Search">
+                        </label>
+                    </div>
+
                 </div>
 
                 <div class="content">
 
-                    a
+                    <div class="playlists-info">
+
+                        <div class="num-add-filter">
+                            <span>#</span>
+                        </div>
+
+                        <div class="platform-filter">
+                            <span>Title</span>
+                        </div>
+
+                        <div class="tracks-filter">
+                            <span>Songs</span>
+                        </div>
+
+                        <div class="date-created-filter">
+                            <span>Date created</span>
+                        </div>
+
+                    </div>
+
+                    {% for playlist in playlists %}
+                    {% endfor %}
+
+                    <div class="playlist">
+
+                        <div class="num-add">
+                            <span class="num-span">{{ 1 }}</span>
+                            <label class="select-div select-playlist">
+                                <input type="checkbox" class="select-all"></input>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                        <div class="platform">
+                            <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="spotify">
+                            <div class="playlist-title">
+                                <p>{{ Mix }} Mix</p>
+                                <span title="Explicit">E</span>
+                                <span>You</span>
+                            </div>
+                        </div>
+
+                        <div class="tracks">
+                            <span>{{ 203 }}</span>
+                        </div>
+
+                        <div class="date-created">
+                            <span>11.11.2011</span>
+                        </div>
+
+                    </div>
+
+                    <div class="playlist">
+
+                        <div class="num-add">
+                            <span class="num-span">{{ 2 }}</span>
+                            <label class="select-div select-playlist">
+                                <input type="checkbox" class="select-all"></input>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                        <div class="platform">
+                            <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
+                            <div class="playlist-title">
+                                <p>{{ Mix }} Chill Jazz</p>
+                                <span title="Explicit">E</span>
+                                <span>Spotify</span>
+                            </div>
+                        </div>
+
+                        <div class="tracks">
+                            <span>{{ 184 }}</span>
+                        </div>
+
+                        <div class="date-created">
+                            <span>31.01.2021</span>
+                        </div>
+
+                    </div>
                 
                 </div>
 
