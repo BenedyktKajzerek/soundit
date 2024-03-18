@@ -41,6 +41,10 @@ body {
     display: flex;
 }
 
+.responsive-nav {
+    display: flex;
+}
+
 /* ===== Services Section ===== */
 
 .services-wrapper {
@@ -219,8 +223,20 @@ body {
     height: 60px;
     display: flex;
     align-items: center;
-    padding: 0 18px;
+    padding: 0 21px;
     background-color: var(--bg-dark);
+}
+
+#toggle-mobile-nav {
+    display: none;
+}
+
+.hamburger {
+    font-size: 24px;
+    margin-right: 14px;
+    margin-left: 1px;
+    display: none;
+    cursor: pointer;
 }
 
 .header h5 {
@@ -374,7 +390,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 24px;
+    padding: 0 20px;
     background-color: var(--bg);
 }
 
@@ -453,4 +469,31 @@ body {
 
 .playlist-title span {
     font-size: 14px;
+}
+
+/* ===== Responsive Design ===== */
+
+@media all and (max-width: 1200px) {
+    
+    .responsive-nav {
+        height: 0;
+        width: 0;
+    }
+
+    .main-wrapper {
+        width: 100%;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}
+
+.display-nav {
+    height: 100%;
+    width: 380px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
 }
