@@ -2,13 +2,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from requests import Request, post
 
+from .utils import create_or_update_user_token, is_spotify_authenticated
 from .models import User, SpotifyToken, YouTubeToken
 
 # Get credentials from .env
@@ -19,7 +20,7 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = "http://127.0.0.1:8000/"
+REDIRECT_URI = "http://127.0.0.1:8000/redirect"
 
 
 # Request authorization to access data (Spotify)
@@ -58,15 +59,30 @@ def spotify_callback(request, format=None):
     refresh_token = response.get('refresh_token')
     error = response.get('error')
 
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
+
+    create_or_update_user_token(
+        request.session.session_key, access_token,token_type, expires_in, refresh_token)
+
+    return (redirect(reverse('index')))
+
+
+class IsAuthenticated(APIView):
+    def get(self, request, format=None):
+        is_authenticated = is_spotify_authenticated(
+            self.request.session.session_key)
+        return Response({'status': is_authenticated}, status=status.HTTP_200_OK)
+
 
 def index(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('webapp'))
+        return HttpResponseRedirect(reverse('profile'))
 
     return render(request, "soundit/index.html")
 
 
-def login(request):
+def login_view(request):
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -77,7 +93,7 @@ def login(request):
         # Check if authentication was successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse('index'))
         else:
             return render(request, "soundit/login.html", {
                 'error': "Invalid username and/or password."
@@ -86,7 +102,7 @@ def login(request):
         return render(request, "soundit/login.html")
 
 
-def logout(request):
+def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
@@ -119,7 +135,7 @@ def register(request):
         return render(request, "soundit/register.html")
 
 
-# @login_required
+@login_required
 def profile(request):
     return render(request, "soundit/profile.html")
 

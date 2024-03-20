@@ -13,4 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      document.querySelector('.add-service').addEventListener('click', () => {
+        authenticateSpotify()
+      })
+
+      let spotifyAuthenticated = false;
+
+      function authenticateSpotify() {
+        fetch('/profile/is-authenticated')
+        .then(response => response.json())
+        .then(data => {
+            spotifyAuthenticated = data.status;
+
+            if (!data.status) {
+                fetch('/profile/get-auth-url')
+                .then(response => response.json())
+                .then(data => {
+                    // Open prepared url from class AuthURL
+                    window.location.replace(data.url);
+                })
+            }
+        })
+    }
+
 });

@@ -18,8 +18,7 @@
     
     --link: #1DA1F2;
 
-    --red: #ea2a1b;
-    --red2: #D14836;
+    --warning: #cf3c29;
 }
 
 *,
@@ -135,4 +134,10 @@ form {
 .sign-other a {
     text-decoration: none;
     color: var(--link);
+}
+
+.error {
+    width: 90%;
+    margin: 4px auto;
+    color: var(--warning); 
 }
