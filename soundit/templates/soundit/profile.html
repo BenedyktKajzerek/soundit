@@ -139,8 +139,8 @@
                     </label>
 
                     <div>
-                        <h2>Playlists{{ Playlists }}</h2>
-                        <h5>{{ 43 }} total | {{ 0 }} selected</h3>
+                        <h2>Playlists</h2>
+                        <h5>{{ playlists.total }} total | {{ 0 }} selected</h3>
                     </div>
                             
                 </div>
@@ -189,13 +189,47 @@
                             <span>Songs</span>
                         </div>
 
-                        <div class="date-created-filter">
-                            <span>Date created</span>
+                        <div class="public-filter">
+                            <span>Type</span>
                         </div>
 
                     </div>
 
-                    {% for playlist in playlists %}
+                    {% for playlist in playlists.items %}
+                        <div class="playlist">
+
+                            <div class="num-add">
+                                <span class="num-span">{{ 2 }}</span>
+                                <label class="select-div select-playlist">
+                                    <input type="checkbox" class="select-all"></input>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+
+                            <div class="platform">
+                                <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
+                                <div class="playlist-title">
+                                    <p>{{ playlist.name }}</p>
+                                    <span title="Explicit">E</span>
+                                    <span>{{ playlist.owner.display_name }}</span>
+                                </div>
+                            </div>
+
+                            <div class="tracks">
+                                <span>{{ playlist.tracks.total }}</span>
+                            </div>
+
+                            <div class="public">
+                                <span>
+                                    {% if playlist.public %}
+                                        Public
+                                    {% else %}
+                                        Private
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                        </div>
                     {% endfor %}
 
                     <div class="playlist">
@@ -221,37 +255,8 @@
                             <span>{{ 203 }}</span>
                         </div>
 
-                        <div class="date-created">
-                            <span>11.11.2011</span>
-                        </div>
-
-                    </div>
-
-                    <div class="playlist">
-
-                        <div class="num-add">
-                            <span class="num-span">{{ 2 }}</span>
-                            <label class="select-div select-playlist">
-                                <input type="checkbox" class="select-all"></input>
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-
-                        <div class="platform">
-                            <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
-                            <div class="playlist-title">
-                                <p>{{ Mix }} Chill Jazz</p>
-                                <span title="Explicit">E</span>
-                                <span>Spotify</span>
-                            </div>
-                        </div>
-
-                        <div class="tracks">
-                            <span>{{ 184 }}</span>
-                        </div>
-
-                        <div class="date-created">
-                            <span>31.01.2021</span>
+                        <div class="public">
+                            <span>Private</span>
                         </div>
 
                     </div>

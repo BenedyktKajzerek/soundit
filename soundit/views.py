@@ -8,8 +8,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from requests import Request, post
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .utils import create_or_update_user_token, is_spotify_authenticated
+from django.utils import timezone
+from datetime import timedelta
+
+from .utils_spotify import *
 from .models import User, SpotifyToken, YouTubeToken
 
 # Get credentials from .env
@@ -18,38 +22,44 @@ import os
 
 load_dotenv()
 
+# Spotify
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = "http://127.0.0.1:8000/redirect"
+REDIRECT_URI = "http://127.0.0.1:8000/profile/spotify/callback"
 
 
-# Request authorization to access data (Spotify)
-class AuthURL(APIView):
+# Request authorization to access data
+class SpotifyAuthURL(LoginRequiredMixin, APIView):
     def get(self, request, format=None):
         # Everything a user is allowing us to do with his account
         scope = 'playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public'
 
-        url = Request('GET', 'https://accounts.spotify.com/authorize', parama={
-            'client_id': CLIENT_ID,
+        url = Request('GET', 'https://accounts.spotify.com/authorize', params={
             'response_type': 'code',
-            'redirect_uri': REDIRECT_URI,
+            'client_id': CLIENT_ID,
             'scope': scope,
+            'redirect_uri': REDIRECT_URI
         }).prepare().url # extract url of the prepared request
 
+        # Display scopes and prompt user to login
         return Response({'url': url}, status=status.HTTP_200_OK)
 
 
-# Request access and refresh token (Spotify)
+# Request access and refresh token
 def spotify_callback(request, format=None):
+    # An authorization code that can be exchanged for an access token.
     code = request.GET.get('code')
-    error = request.GET.get('error') # (e.g. access_denied)
+    error = request.GET.get('error') 
 
-    # Call post request and get response
+    if error: # (e.g. access_denied)
+        return redirect(reverse('index'))
+
+    # Return access and refresh tokens
     response = post('https://accounts.spotify.com/api/token', data={
+        'code': code,
+        'grant_type': 'authorization_code',
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
-        'grant_type': 'authorization_code',
-        'code': code,
         'redirect_uri': REDIRECT_URI,
     }).json()
 
@@ -59,23 +69,20 @@ def spotify_callback(request, format=None):
     refresh_token = response.get('refresh_token')
     error = response.get('error')
 
-    if not request.session.exists(request.session.session_key):
-        request.session.create()
+    spotify_create_or_update_user_token(
+        request.user, access_token, token_type, expires_in, refresh_token)
 
-    create_or_update_user_token(
-        request.session.session_key, access_token,token_type, expires_in, refresh_token)
-
-    return (redirect(reverse('index')))
+    return redirect(reverse('index'))
 
 
-class IsAuthenticated(APIView):
+class SpotifyIsAuthenticated(LoginRequiredMixin, APIView):
     def get(self, request, format=None):
-        is_authenticated = is_spotify_authenticated(
-            self.request.session.session_key)
+        is_authenticated = spotify_is_authenticated(request.user)
         return Response({'status': is_authenticated}, status=status.HTTP_200_OK)
 
 
 def index(request):
+    # Redirect to profile if logged in
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('profile'))
 
@@ -137,7 +144,12 @@ def register(request):
 
 @login_required
 def profile(request):
-    return render(request, "soundit/profile.html")
+    endpoint = 'playlists'
+    response = spotify_api_request(request.user, endpoint)
+
+    return render(request, "soundit/profile.html", {
+        'playlists': response
+    })
 
 def about(request):
     return render(request, "soundit/about.html")

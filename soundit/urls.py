@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from .views import AuthURL, spotify_callback, IsAuthenticated
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -10,11 +9,13 @@ urlpatterns = [
     path('about', views.about, name='about'),
     path('transfer', views.transfer, name='transfer'),
 
-    # API related
-    path('profile/get-auth-url', AuthURL.as_view()),
-    path('profile/redirect', spotify_callback),
-    path('profile/is-authenticated', IsAuthenticated.as_view()),
+    # API related (Spotify)
+    path('profile/spotify/get-auth-url', views.SpotifyAuthURL.as_view()),
+    path('profile/spotify/callback', views.spotify_callback),
+    path('profile/spotify/is-authenticated', views.SpotifyIsAuthenticated.as_view()),
     
+    # API related (YouTube)
+
     # WebApp (when user is logged in)
     path('profile/', views.profile, name='profile'),
 ]

@@ -392,11 +392,12 @@ body {
     align-items: center;
     padding: 0 20px;
     background-color: var(--bg);
+    overflow-y: scroll;
 }
 
 .playlists-info {
     width: 100%;
-    height: 40px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     margin: 24px 0;
@@ -417,14 +418,14 @@ body {
 
 .tracks, 
 .tracks-filter,
-.date-created,
-.date-created-filter {
+.public,
+.public-filter {
     width: 300px;
 }
 
 .playlist {
     width: 100%;
-    height: 56px;
+    min-height: 56px;
     display: flex;
     align-items: center;
     padding-left: 20px;
