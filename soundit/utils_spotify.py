@@ -37,16 +37,17 @@ def spotify_create_or_update_user_token(user, access_token, token_type, expires_
     # Update/create token
     if token:
         # token.save() -> then change values -> then update_fields
+        # token.save()
         token.access_token = access_token
-        token.save()
+        # token.save()
         token.token_type = token_type
-        token.save()
+        # token.save()
         token.expires_in = expires_in
-        token.save()
+        # token.save()
         token.refresh_token = refresh_token
-        token.save()
+        # token.save()
         # This leaves an error (why?)
-        # token.save(update_fields=['access_token', 'token_type', 'expires_in', 'refresh_token'])
+        token.save(update_fields=['access_token', 'token_type', 'expires_in', 'refresh_token'])
     else:
         token = SpotifyToken(
             user=user, 

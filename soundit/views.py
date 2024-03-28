@@ -144,11 +144,33 @@ def register(request):
 
 @login_required
 def profile(request):
+    # Check if needed to refresh token
+    spotify_is_authenticated(request.user)
+
     endpoint = 'playlists'
-    response = spotify_api_request(request.user, endpoint)
+    response_spotify = spotify_api_request(request.user, endpoint)
+
+    total_playlists = response_spotify['total']
+    total_tracks = 0
+    total_albums = 0
+    total_artists = 0
+
+    for playlist in response_spotify['items']:
+        total_tracks += playlist['tracks']['total']
+
+    general = {
+        'total': {
+            'playlists': total_playlists,
+            'tracks': total_tracks,
+            'albums': total_albums,
+            'artists': total_artists,
+        }
+    }
 
     return render(request, "soundit/profile.html", {
-        'playlists': response
+        'general': general,
+        'playlists_spotify': response_spotify,
+        # 'playlists_youtube': response_youtube
     })
 
 def about(request):

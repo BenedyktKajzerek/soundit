@@ -78,19 +78,19 @@
 
                         <div class="lib-div">
                             <span>Playlists</span>
-                            <div class="lib-num">{{ 66 }}</div>
+                            <div class="lib-num">{{ general.total.playlists }}</div>
                         </div>
                         <div class="lib-div">
                             <span>Tracks</span>
-                            <div class="lib-num">{{ 291 }}</div>
+                            <div class="lib-num">{{ general.total.tracks }}</div>
                         </div>
                         <div class="lib-div">
                             <span>Albums</span>
-                            <div class="lib-num">{{ 28 }}</div>
+                            <div class="lib-num">{{ general.total.albums }}</div>
                         </div>
                         <div class="lib-div">
                             <span>Artists</span>
-                            <div class="lib-num">{{ 57 }}</div>
+                            <div class="lib-num">{{ general.total.artists }}</div>
                         </div>
 
                     </div>
@@ -103,19 +103,19 @@
 
                         <div class="stats-div">
                             <span>Transfered playlists</span>
-                            <div class="stats-num">{{ 16 }}</div>
+                            <div class="stats-num">{{ 0 }}</div>
                         </div>
                         <div class="stats-div">
                             <span>Transfered tracks</span>
-                            <div class="stats-num">{{ 524 }}</div>
+                            <div class="stats-num">{{ 0 }}</div>
                         </div>
                         <div class="stats-div">
                             <span>Transfered albums</span>
-                            <div class="stats-num">{{ 10 }}</div>
+                            <div class="stats-num">{{ 0 }}</div>
                         </div>
                         <div class="stats-div">
                             <span>Transfered artists</span>
-                            <div class="stats-num">{{ 7 }}</div>
+                            <div class="stats-num">{{ 0 }}</div>
                         </div>
 
                     </div>
@@ -140,7 +140,9 @@
 
                     <div>
                         <h2>Playlists</h2>
-                        <h5>{{ playlists.total }} total | {{ 0 }} selected</h3>
+                        <h5>
+                            {{ general.total.playlists }} total | <span>0</span> selected
+                        </h5>
                     </div>
                             
                 </div>
@@ -195,11 +197,11 @@
 
                     </div>
 
-                    {% for playlist in playlists.items %}
+                    {% for playlist in playlists_spotify.items %}
                         <div class="playlist">
 
                             <div class="num-add">
-                                <span class="num-span">{{ 2 }}</span>
+                                <span class="num-span">{{ forloop.counter }}</span>
                                 <label class="select-div select-playlist">
                                     <input type="checkbox" class="select-all"></input>
                                     <span class="checkmark"></span>
@@ -216,7 +218,7 @@
                             </div>
 
                             <div class="tracks">
-                                <span>{{ playlist.tracks.total }}</span>
+                                <span>{{ playlist.tracks.total }} songs</span>
                             </div>
 
                             <div class="public">
