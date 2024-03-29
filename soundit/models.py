@@ -21,7 +21,7 @@ class YouTubeToken(models.Model):
     access_token = models.CharField(max_length=255)
     token_type = models.CharField(max_length=50)
     expires_in = models.DateTimeField()
-    refresh_token = models.CharField(max_length=255, null=True)
+    refresh_token = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user}'

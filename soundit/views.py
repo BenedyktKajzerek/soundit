@@ -9,11 +9,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from requests import Request, post
 from django.contrib.auth.mixins import LoginRequiredMixin
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
 
 from django.utils import timezone
 from datetime import timedelta
 
-from .utils_spotify import *
+from .utils import *
 from .models import User, SpotifyToken, YouTubeToken
 
 # Get credentials from .env
@@ -22,11 +24,18 @@ import os
 
 load_dotenv()
 
-# Spotify
+# Spotify credentials
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://127.0.0.1:8000/profile/spotify/callback"
 
+# YouTube credentials
+FLOW = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+    'client_secret.json',
+    scopes=['https://www.googleapis.com/auth/youtube'])
+FLOW.redirect_uri = 'http://127.0.0.1:8000/profile/youtube/callback'
+
+##### Spotify Authorization funtions #####
 
 # Request authorization to access data
 class SpotifyAuthURL(LoginRequiredMixin, APIView):
@@ -69,16 +78,58 @@ def spotify_callback(request, format=None):
     refresh_token = response.get('refresh_token')
     error = response.get('error')
 
-    spotify_create_or_update_user_token(
-        request.user, access_token, token_type, expires_in, refresh_token)
+    create_or_update_user_token(
+        request.user, access_token, token_type, expires_in, refresh_token, "spotify")
 
     return redirect(reverse('index'))
 
 
 class SpotifyIsAuthenticated(LoginRequiredMixin, APIView):
     def get(self, request, format=None):
-        is_authenticated = spotify_is_authenticated(request.user)
-        return Response({'status': is_authenticated}, status=status.HTTP_200_OK)
+        authenticated = is_authenticated(request.user, "spotify")
+        return Response({'status': authenticated}, status=status.HTTP_200_OK)
+
+##### YouTube Authorization funtions #####
+
+# Request authorization to access data
+class YouTubeAuthURL(LoginRequiredMixin, APIView):
+    def get(self, request, format=None):
+        authorization_url = FLOW.authorization_url(
+            access_type='offline',
+            include_granted_scopes=True,
+        )
+        return Response({'url': authorization_url}, status=status.HTTP_200_OK)
+    
+# Request access and refresh token
+def youtube_callback(request, format=None):
+     # An authorization code that can be exchanged for an access token.
+    code = request.GET.get('code')
+    error = request.GET.get('error') 
+
+    if error: # (e.g. access_denied)
+        return redirect(reverse('index'))
+
+    # Return access and refresh tokens
+    authorization_response = request.build_absolute_uri()
+    FLOW.fetch_token(authorization_response=authorization_response)
+
+    credentials = FLOW.credentials
+    access_token = credentials.get('access_token')
+    token_type = credentials.get('token_type')
+    expires_in = credentials.get('expires_in')
+    refresh_token = credentials.get('refresh_token')
+    error = credentials.get('error')
+
+    create_or_update_user_token(
+        request.user, access_token, token_type, expires_in, refresh_token, "youtube")
+
+    return redirect(reverse('index'))
+
+
+class YouTubeIsAuthenticated(LoginRequiredMixin, APIView):
+    def get(self, request, format=None):
+        authenticated = is_authenticated(request.user, "youtube")
+        return Response({'status': authenticated}, status=status.HTTP_200_OK)
 
 
 def index(request):
@@ -145,7 +196,9 @@ def register(request):
 @login_required
 def profile(request):
     # Check if needed to refresh token
-    spotify_is_authenticated(request.user)
+    # loop over services and call function
+    # on which he's connected with
+    is_authenticated(request.user, "spotify")
 
     endpoint = 'playlists'
     response_spotify = spotify_api_request(request.user, endpoint)
