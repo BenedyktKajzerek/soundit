@@ -41,8 +41,9 @@ def get_user_token(user, service):
 
 def create_or_update_user_token(user, access_token, token_type, expires_in, refresh_token, service):
     token = get_user_token(user, service)
-    # Convert 3600s to date
-    expires_in = timezone.now() + timedelta(seconds=expires_in)
+    # Convert seconds to date if needed
+    if type(expires_in) is int:
+        expires_in = timezone.now() + timedelta(seconds=expires_in)
 
     if token:
         # Update

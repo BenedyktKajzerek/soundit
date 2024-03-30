@@ -21,6 +21,8 @@ from .models import User, SpotifyToken, YouTubeToken
 # Get credentials from .env
 from dotenv import load_dotenv
 import os
+# Allows OAuth2 (YouTube) to run on http (with no s)
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 load_dotenv()
 
@@ -96,7 +98,7 @@ class YouTubeAuthURL(LoginRequiredMixin, APIView):
     def get(self, request, format=None):
         authorization_url = FLOW.authorization_url(
             access_type='offline',
-            include_granted_scopes=True,
+            include_granted_scopes='true',
         )
         return Response({'url': authorization_url}, status=status.HTTP_200_OK)
     
@@ -114,11 +116,10 @@ def youtube_callback(request, format=None):
     FLOW.fetch_token(authorization_response=authorization_response)
 
     credentials = FLOW.credentials
-    access_token = credentials.get('access_token')
-    token_type = credentials.get('token_type')
-    expires_in = credentials.get('expires_in')
-    refresh_token = credentials.get('refresh_token')
-    error = credentials.get('error')
+    access_token = credentials.token
+    token_type = "Bearer"
+    expires_in = credentials.expiry
+    refresh_token = credentials.refresh_token
 
     create_or_update_user_token(
         request.user, access_token, token_type, expires_in, refresh_token, "youtube")
