@@ -234,10 +234,11 @@
                         </div>
                     {% endfor %}
 
+                    {% for playlist in playlists_youtube.items %}
                     <div class="playlist">
 
                         <div class="num-add">
-                            <span class="num-span">{{ 1 }}</span>
+                            <span class="num-span">{{ forloop.counter }}</span>
                             <label class="select-div select-playlist">
                                 <input type="checkbox" class="select-all"></input>
                                 <span class="checkmark"></span>
@@ -247,21 +248,22 @@
                         <div class="platform">
                             <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="spotify">
                             <div class="playlist-title">
-                                <p>{{ Mix }} Mix</p>
+                                <p>{{ playlist.snippet.title }}</p>
                                 <span title="Explicit">E</span>
-                                <span>You</span>
+                                <span>{{ playlist.snippet.channelTitle }}</span>
                             </div>
                         </div>
 
                         <div class="tracks">
-                            <span>{{ 203 }}</span>
+                            <span>{{ playlist.contentDetails.itemCount }} songs</span>
                         </div>
 
                         <div class="public">
-                            <span>Private</span>
+                            <span><!-- {{ playlist.status.privacyStatus }} --> Private</span>
                         </div>
 
                     </div>
+                    {% endfor %}
                 
                 </div>
 

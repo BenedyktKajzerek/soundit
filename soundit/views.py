@@ -11,6 +11,8 @@ from requests import Request, post
 from django.contrib.auth.mixins import LoginRequiredMixin
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+import googleapiclient.discovery
+import googleapiclient.errors
 
 from django.utils import timezone
 from datetime import timedelta
@@ -21,7 +23,8 @@ from .models import User, SpotifyToken, YouTubeToken
 # Get credentials from .env
 from dotenv import load_dotenv
 import os
-# Allows OAuth2 (YouTube) to run on http (with no s)
+
+# Disable OAuthlib's HTTPS verification when running locally.
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 load_dotenv()
@@ -32,9 +35,11 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://127.0.0.1:8000/profile/spotify/callback"
 
 # YouTube credentials
+API_KEY_YT = 'AIzaSyCpse0zzLUChnmgqsVzGwK2Q3aEQAlcsPM'
+SCOPES = 'https://www.googleapis.com/auth/youtube'
 FLOW = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
     'client_secret.json',
-    scopes=['https://www.googleapis.com/auth/youtube'])
+    scopes=[SCOPES])
 FLOW.redirect_uri = 'http://127.0.0.1:8000/profile/youtube/callback'
 
 ##### Spotify Authorization funtions #####
@@ -200,17 +205,36 @@ def profile(request):
     # loop over services and call function
     # on which he's connected with
     is_authenticated(request.user, "spotify")
+    is_authenticated(request.user, "youtube")
 
     endpoint = 'playlists'
-    response_spotify = spotify_api_request(request.user, endpoint)
+    response_spotify = api_request(request.user, "spotify", endpoint)
+    endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}'
+    response_youtube = api_request(request.user, "youtube", endpoint)
 
-    total_playlists = response_spotify['total']
+    if response_youtube['pageInfo']['totalResults'] > 5:
+        nextPageToken = response_youtube['nextPageToken']
+        endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}&pageToken={nextPageToken}'
+        response_youtube2 = api_request(request.user, "youtube", endpoint)
+    print(response_youtube)
+    print("==================")
+    print(response_youtube2)
+    print("==================")
+    for x in response_youtube2['items']:
+        response_youtube['items'].append(x)
+    print(response_youtube)
+        
+
+    total_playlists = response_spotify['total'] + response_youtube['pageInfo']['totalResults']
     total_tracks = 0
     total_albums = 0
     total_artists = 0
 
     for playlist in response_spotify['items']:
         total_tracks += playlist['tracks']['total']
+
+    for playlist in response_youtube['items']:
+        total_tracks += playlist['contentDetails']['itemCount']
 
     general = {
         'total': {
@@ -224,7 +248,7 @@ def profile(request):
     return render(request, "soundit/profile.html", {
         'general': general,
         'playlists_spotify': response_spotify,
-        # 'playlists_youtube': response_youtube
+        'playlists_youtube': response_youtube
     })
 
 def about(request):
