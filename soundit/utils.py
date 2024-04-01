@@ -2,6 +2,7 @@ from django.utils import timezone
 from datetime import timedelta
 from requests import get, post, put
 import requests
+import math
 
 from .models import SpotifyToken, YouTubeToken
 
@@ -14,6 +15,7 @@ load_dotenv()
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
+API_KEY_YT = os.getenv("API_KEY_YT")
 CLIENT_ID_YT = os.getenv("CLIENT_ID_YT")
 CLIENT_SECRET_YT = os.getenv("CLIENT_SECRET_YT")
 
@@ -25,16 +27,11 @@ token_classes = {
     "youtube": YouTubeToken,
 }
 
-# ===== Authentication / Tokens =====
+##### Authentication / Tokens #####
 
 def get_user_token(user, service):
     TokenClass = token_classes[service]
     user_token = TokenClass.objects.filter(user=user)
-
-    # if service == "spotify":
-    #     user_token = SpotifyToken.objects.filter(user=user)
-    # elif service == "youtube":
-    #     user_token = YouTubeToken.objects.filter(user=user)
 
     # Check if user already has a token
     if user_token.exists():
@@ -43,7 +40,7 @@ def get_user_token(user, service):
         return None
 
 
-def create_or_update_user_token(user, access_token, token_type, expires_in, refresh_token, service):
+def create_or_update_user_token(user, service, access_token, token_type, expires_in, refresh_token):
     token = get_user_token(user, service)
     # Convert seconds to date if needed
     if type(expires_in) is int:
@@ -100,14 +97,6 @@ def refresh_token(user, service):
             'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET
         }).json()
-
-        access_token = response.get('access_token')
-        token_type = response.get('token_type')
-        expires_in = response.get('expires_in')
-        refresh_token = response.get('refresh_token')
-    
-        create_or_update_user_token(
-            user, access_token, token_type, expires_in, refresh_token, service)
     elif service == "youtube":
         response = post('https://oauth2.googleapis.com/token', data={
             'grant_type': 'refresh_token',
@@ -116,15 +105,15 @@ def refresh_token(user, service):
             'client_secret': CLIENT_SECRET_YT
         }).json()
 
-        access_token = response.get('access_token')
-        token_type = response.get('token_type')
-        expires_in = response.get('expires_in')
-        refresh_token = response.get('refresh_token')
+    access_token = response.get('access_token')
+    token_type = response.get('token_type')
+    expires_in = response.get('expires_in')
+    refresh_token = response.get('refresh_token')
+
+    create_or_update_user_token(
+        user, service, access_token, token_type, expires_in, refresh_token)
     
-        create_or_update_user_token(
-            user, access_token, token_type, expires_in, refresh_token, service)
-    
-# ===== Using API =====
+##### Using API #####
 
 def api_request(user, service, endpoint, post_=False, put_=False):
     token = get_user_token(user, service)
@@ -139,3 +128,22 @@ def api_request(user, service, endpoint, post_=False, put_=False):
         return response.json()
     except:
         return {'Error': 'Error'}
+
+##### YouTube API #####
+    
+def get_every_youtube_playlist(user, response_youtube):
+    # Go over every page extending the list with playlists
+    # YouTube shows only 5 playlists per 1 page (api call)
+    pageTimes = math.ceil(response_youtube['pageInfo']['totalResults'] / response_youtube['pageInfo']['resultsPerPage']) - 1
+    for i in range(pageTimes):
+        if i == 0:
+            nextPageToken = response_youtube['nextPageToken']
+        else:
+            nextPageToken = nextPageResponse['nextPageToken']
+
+        endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}&pageToken={nextPageToken}'
+        nextPageResponse = api_request(user, "youtube", endpoint)
+
+        response_youtube['items'].extend(nextPageResponse['items'])
+    
+    return response_youtube

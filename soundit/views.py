@@ -35,7 +35,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://127.0.0.1:8000/profile/spotify/callback"
 
 # YouTube credentials
-API_KEY_YT = 'AIzaSyCpse0zzLUChnmgqsVzGwK2Q3aEQAlcsPM'
+API_KEY_YT = os.getenv("API_KEY_YT")
 SCOPES = 'https://www.googleapis.com/auth/youtube'
 FLOW = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
     'client_secret.json',
@@ -201,40 +201,39 @@ def register(request):
 
 @login_required
 def profile(request):
-    # Check if needed to refresh token
-    # loop over services and call function
-    # on which he's connected with
-    is_authenticated(request.user, "spotify")
-    is_authenticated(request.user, "youtube")
+    is_spotify_connected = SpotifyToken.objects.only('user').filter(user=request.user).exists()
+    is_youtube_connected = YouTubeToken.objects.only('user').filter(user=request.user).exists()
+    
+    total_playlists = total_tracks = total_albums = total_artists = 0
 
-    endpoint = 'playlists'
-    response_spotify = api_request(request.user, "spotify", endpoint)
-    endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}'
-    response_youtube = api_request(request.user, "youtube", endpoint)
+    if is_spotify_connected:
+        # Check if needed to refresh token
+        is_authenticated(request.user, "spotify")
 
-    if response_youtube['pageInfo']['totalResults'] > 5:
-        nextPageToken = response_youtube['nextPageToken']
-        endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}&pageToken={nextPageToken}'
-        response_youtube2 = api_request(request.user, "youtube", endpoint)
-    print(response_youtube)
-    print("==================")
-    print(response_youtube2)
-    print("==================")
-    for x in response_youtube2['items']:
-        response_youtube['items'].append(x)
-    print(response_youtube)
+        # Get playlists
+        endpoint = 'playlists'
+        response_spotify = api_request(request.user, "spotify", endpoint)
+
+        # general
+        total_playlists += response_spotify['total']
         
+        for playlist in response_spotify['items']:
+            total_tracks += playlist['tracks']['total']
 
-    total_playlists = response_spotify['total'] + response_youtube['pageInfo']['totalResults']
-    total_tracks = 0
-    total_albums = 0
-    total_artists = 0
+    if is_youtube_connected:
+        # Check if needed to refresh token
+        is_authenticated(request.user, "youtube")
 
-    for playlist in response_spotify['items']:
-        total_tracks += playlist['tracks']['total']
+        # Get playlists
+        endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}'
+        response_youtube = api_request(request.user, "youtube", endpoint)
+        response_youtube = get_every_youtube_playlist(request.user, response_youtube)
 
-    for playlist in response_youtube['items']:
-        total_tracks += playlist['contentDetails']['itemCount']
+        # general
+        total_playlists += len(response_youtube['items'])
+
+        for playlist in response_youtube['items']:
+            total_tracks += playlist['contentDetails']['itemCount']
 
     general = {
         'total': {
