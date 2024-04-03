@@ -33,22 +33,43 @@
             <div class="services-wrapper">
                 
                 <div class="logo">
-                    <a href="{% url 'index' %}">
-                        <img src="{% static 'soundit/media/logo.png' %}" alt="logo">
-                    </a>
+                    <img src="{% static 'soundit/media/logo.png' %}" alt="logo">
                 </div>
 
                 <div class="services">
 
-                    <div class="service">
-                        <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
+                    <div>
+                        {% if general.services.is_spotify_connected %}
+                            <div class="service">
+                                <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
+                            </div>
+                        {% endif %}
+                        {% if general.services.is_spotify_connected %}
+                            <div class="service">
+                                <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="service">
-                        <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
+
+                    <div>
+                        <div class="services-to-connect">
+                            {% if general.services.is_spotify_connected == False %}
+                                <div class="service" id="add-spotify">
+                                    <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
+                                </div>
+                            {% endif %}
+                            {% if general.services.is_youtube_connected == False %}
+                                <div class="service" id="add-youtube">
+                                    <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="add-service service" title="Add service">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
                     </div>
-                    <div class="add-service service">
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
+
 
                 </div>
             
@@ -61,9 +82,9 @@
                 <div class="account">
                     <div>
                         <i class="fa-solid fa-circle-user"></i>
-                        <span>{{ Username }}Username</span>
+                        <span>{{ general.user.username }}</span>
                     </div>
-                    <div class="settings">
+                    <div class="settings-btn" id="settings-btn">
                         <i class="fa-solid fa-gear"></i>
                     </div>
                 </div>
@@ -84,13 +105,39 @@
                             <span>Tracks</span>
                             <div class="lib-num">{{ general.total.tracks }}</div>
                         </div>
+
+                    </div>
+
+                    <div class="library library-spotify">
+
+                        <div class="lib-divider">
+                            <span>Spotify</span>
+                        </div>
+
                         <div class="lib-div">
-                            <span>Albums</span>
-                            <div class="lib-num">{{ general.total.albums }}</div>
+                            <span>Spotify playlists</span>
+                            <div class="lib-num">{{ general.spotify.playlists }}</div>
                         </div>
                         <div class="lib-div">
-                            <span>Artists</span>
-                            <div class="lib-num">{{ general.total.artists }}</div>
+                            <span>Spotify tracks</span>
+                            <div class="lib-num">{{ general.spotify.tracks }}</div>
+                        </div>
+
+                    </div>
+
+                    <div class="library library-youtube">
+
+                        <div class="lib-divider">
+                            <span>YouTube</span>
+                        </div>
+
+                        <div class="lib-div">
+                            <span>YouTube playlists</span>
+                            <div class="lib-num">{{ general.youtube.playlists }}</div>
+                        </div>
+                        <div class="lib-div">
+                            <span>YouTube tracks</span>
+                            <div class="lib-num">{{ general.youtube.tracks }}</div>
                         </div>
 
                     </div>
@@ -107,14 +154,6 @@
                         </div>
                         <div class="stats-div">
                             <span>Transfered tracks</span>
-                            <div class="stats-num">{{ 0 }}</div>
-                        </div>
-                        <div class="stats-div">
-                            <span>Transfered albums</span>
-                            <div class="stats-num">{{ 0 }}</div>
-                        </div>
-                        <div class="stats-div">
-                            <span>Transfered artists</span>
                             <div class="stats-num">{{ 0 }}</div>
                         </div>
 
@@ -150,15 +189,15 @@
                 <div class="header2">
                     
                     <div class="header2-container">
-                        <label class="select-div">
+                        <label class="select-div" title="Select all">
                             <input type="checkbox" class="select-all"></input>
                             <span class="checkmark"></span>
                         </label>
                         <div class="playlist-options">
-                            <button type="button" class="playlist-option">
+                            <button type="button" class="playlist-option" title="Convert">
                                 <i class="fa-solid fa-arrow-right-arrow-left"></i>
                             </button>
-                            <button type="button" class="playlist-option">
+                            <button type="button" class="playlist-option" title="Delete">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
                         </div>
@@ -198,7 +237,7 @@
                     </div>
 
                     {% for playlist in playlists_spotify.items %}
-                        <div class="playlist">
+                        <div class="playlist" data-playlistname="{{ playlist.name }}">
 
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter }}</span>
@@ -228,7 +267,6 @@
                                     {% else %}
                                         Private
                                     {% endif %}
-                                    
                                 </span>
                             </div>
 
@@ -236,7 +274,7 @@
                     {% endfor %}
 
                     {% for playlist in playlists_youtube.items %}
-                        <div class="playlist">
+                        <div class="playlist" data-playlistname="{{ playlist.snippet.title }}">
 
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter|add:playlists_spotify.total }}</span>

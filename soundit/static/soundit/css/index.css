@@ -48,13 +48,13 @@
 }
 
 .spotify {
-    color: #1DB954;
+    color: var(--spotify);
     font-size: inherit;
     margin: 0;
 }
 
 .youtube {
-    color: #ff0000;
+    color: var(--youtube);
     font-size: inherit;
     margin: 0;
 }

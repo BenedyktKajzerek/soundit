@@ -86,7 +86,7 @@ def spotify_callback(request, format=None):
     error = response.get('error')
 
     create_or_update_user_token(
-        request.user, access_token, token_type, expires_in, refresh_token, "spotify")
+        request.user, "spotify", access_token, token_type, expires_in, refresh_token)
 
     return redirect(reverse('index'))
 
@@ -105,11 +105,12 @@ class YouTubeAuthURL(LoginRequiredMixin, APIView):
             access_type='offline',
             include_granted_scopes='true',
         )
+        print(authorization_url)
         return Response({'url': authorization_url}, status=status.HTTP_200_OK)
     
 # Request access and refresh token
 def youtube_callback(request, format=None):
-     # An authorization code that can be exchanged for an access token.
+    # An authorization code that can be exchanged for an access token.
     code = request.GET.get('code')
     error = request.GET.get('error') 
 
@@ -127,7 +128,7 @@ def youtube_callback(request, format=None):
     refresh_token = credentials.refresh_token
 
     create_or_update_user_token(
-        request.user, access_token, token_type, expires_in, refresh_token, "youtube")
+        request.user, "youtube", access_token, token_type, expires_in, refresh_token)
 
     return redirect(reverse('index'))
 
@@ -205,6 +206,29 @@ def profile(request):
     is_youtube_connected = YouTubeToken.objects.only('user').filter(user=request.user).exists()
     
     total_playlists = total_tracks = total_albums = total_artists = 0
+    response_spotify = response_youtube = None
+
+    general = {
+        'user': {
+            'username': request.user.username,
+        },
+        'services': {
+            'is_spotify_connected': is_spotify_connected,
+            'is_youtube_connected': is_youtube_connected,
+        },
+        'total': {
+            'playlists': 0,
+            'tracks': 0,
+        },
+        'spotify': {
+            'playlists': 0,
+            'tracks': 0,
+        },
+        'youtube': {
+            'playlists': 0,
+            'tracks': 0,
+        }
+    }
 
     if is_spotify_connected:
         # Check if needed to refresh token
@@ -215,10 +239,13 @@ def profile(request):
         response_spotify = api_request(request.user, "spotify", endpoint)
 
         # general
-        total_playlists += response_spotify['total']
+        general['total']['playlists'] += response_spotify['total']
+        general['spotify']['playlists'] = response_spotify['total']
         
         for playlist in response_spotify['items']:
-            total_tracks += playlist['tracks']['total']
+            general['total']['tracks'] += playlist['tracks']['total']
+            general['spotify']['tracks'] += playlist['tracks']['total']
+
 
     if is_youtube_connected:
         # Check if needed to refresh token
@@ -230,19 +257,12 @@ def profile(request):
         response_youtube = get_every_youtube_playlist(request.user, response_youtube)
 
         # general
-        total_playlists += len(response_youtube['items'])
+        general['total']['playlists'] += len(response_youtube['items'])
+        general['youtube']['playlists'] = len(response_youtube['items'])
 
         for playlist in response_youtube['items']:
-            total_tracks += playlist['contentDetails']['itemCount']
-
-    general = {
-        'total': {
-            'playlists': total_playlists,
-            'tracks': total_tracks,
-            'albums': total_albums,
-            'artists': total_artists,
-        }
-    }
+            general['total']['tracks'] += playlist['contentDetails']['itemCount']
+            general['youtube']['tracks'] += playlist['contentDetails']['itemCount']
 
     return render(request, "soundit/profile.html", {
         'general': general,

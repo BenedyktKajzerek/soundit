@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class User(AbstractUser):
+    transfered_playlists = models.IntegerField(default=0)
+    transfered_tacks = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.id} {self.username}'

@@ -15,6 +15,9 @@
     --third: #4C3575;
     --fourth: #371B58;
     --fifth: #802bb1;
+
+    --spotify: #1DB954;
+    --youtube: #ff0000;
     
     --link: #1DA1F2;
 
@@ -54,6 +57,13 @@ body {
     background-color: rgb(20, 24, 34);
 }
 
+.services {
+    height: calc(100% - 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .logo {
     height: 60px;
     width: 100%;
@@ -77,14 +87,11 @@ body {
 }
 
 .add-service {
-    position: absolute;
     display: grid;
     place-items: center;
     border: 2px solid var(--primary);
     border-radius: 12px;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-bottom: 12px;
 }
 
 .add-service i {
@@ -95,6 +102,10 @@ body {
 
 .add-service:hover i {
     font-size: 34px;
+}
+
+.services-to-connect {
+    display: none;
 }
 
 /* ===== Nav Section ===== */
@@ -133,7 +144,7 @@ body {
     margin: 2px 0 0 12px;
 }
 
-.settings {
+.settings-btn {
     width: 32px;
     height: 32px;
     border-radius: 8px;
@@ -145,6 +156,14 @@ body {
 
 .settings:hover {
     color: var(--light-grey);
+}
+
+.library-spotify .lib-divider {
+    color: var(--spotify);
+}
+
+.library-youtube .lib-divider {
+    color: var(--youtube);
 }
 
 .lib-divider,
@@ -453,7 +472,7 @@ body {
 
 .playlist-title p {
     color: var(--light-grey);
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .playlist-title > span:first-of-type {
@@ -497,4 +516,8 @@ body {
     top: 0;
     left: 0;
     z-index: 100;
+}
+
+.display-block {
+    display: block;
 }
