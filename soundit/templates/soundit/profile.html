@@ -194,10 +194,10 @@
                             <span class="checkmark"></span>
                         </label>
                         <div class="playlist-options">
-                            <button type="button" class="playlist-option" title="Convert">
+                            <button type="button" id="convert-btn" class="playlist-option" title="Convert">
                                 <i class="fa-solid fa-arrow-right-arrow-left"></i>
                             </button>
-                            <button type="button" class="playlist-option" title="Delete">
+                            <button type="button" id="delete-btn" class="playlist-option" title="Delete">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
                         </div>
@@ -242,7 +242,7 @@
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter }}</span>
                                 <label class="select-div select-playlist">
-                                    <input type="checkbox" class="select-all"></input>
+                                    <input type="checkbox" class="playlist-checkbox"></input>
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
@@ -279,7 +279,7 @@
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter|add:playlists_spotify.total }}</span>
                                 <label class="select-div select-playlist">
-                                    <input type="checkbox" class="select-all"></input>
+                                    <input type="checkbox" class="playlist-checkbox"></input>
                                     <span class="checkmark"></span>
                                 </label>
                             </div>

@@ -521,3 +521,8 @@ body {
 .display-block {
     display: block;
 }
+
+.btn-disabled {
+    opacity: .5;
+    cursor: default;
+}

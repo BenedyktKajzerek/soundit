@@ -43,23 +43,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ##### selecting playlists #####
-    let checkboxes = document.querySelectorAll('input[type=checkbox]');
-
-    console.log(checkboxes);
-
+    const checkboxes = document.querySelectorAll('.playlist-checkbox');
+    
+    let checked = [];
+    
     checkboxes.forEach(function(checkbox) {
-        
+
         checkbox.addEventListener('change', function() {
             if (this.checked) {
-                // this.parentElement.classList.add('display-block')
-                console.log('checked');
+                // style checkbox (select-div and num-add)
+                this.parentElement.style.display = 'block';
+                this.parentElement.previousElementSibling.style.display = "none";
+            
+                // push selected playlist 
+                checked.push(this);
             }
             else {
-                // this.parentElement.classList.remove('display-block')
-                console.log('not checked');
+                this.parentElement.style.display = '';
+                this.parentElement.previousElementSibling.style.display = "";
+            
+                let index = checked.indexOf(this);
+                if (index !== -1) {
+                    checked.splice(index, 1);
+                }
             }
-        })
+            checkSelectedCheckboxes()
+        });
     });
+
+    // select all playlists at once
+    document.querySelector('.select-all').addEventListener('change', function() {
+        if (this.checked) {
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = true;
+                checkbox.parentElement.style.display = 'block';
+                checkbox.parentElement.previousElementSibling.style.display = "none";
+            
+                // add only if not already in list
+                if (!checked.includes(checkbox)) {
+                    checked.push(checkbox);
+                }
+            });
+        }
+        else {
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+                checkbox.parentElement.style.display = '';
+                checkbox.parentElement.previousElementSibling.style.display = "";
+            
+                let index = checked.indexOf(checkbox);
+                if (index !== -1) {
+                    checked.splice(index, 1);
+                }
+            });        
+        }
+        checkSelectedCheckboxes()
+    });
+
+    // playlist options
+    const convertBtn = document.querySelector('#convert-btn');
+    const deleteBtn = document.querySelector('#delete-btn');
+
+    function checkSelectedCheckboxes() {
+        // disable/enable convert button
+        if (checked.length !== 1) {
+            convertBtn.disabled = true;
+            convertBtn.classList.add('btn-disabled');
+        }
+        else {
+            convertBtn.disabled = false;
+            convertBtn.classList.remove('btn-disabled');
+        }
+        
+        // disable/enable delete button
+        if (checked.length === 0) {
+            deleteBtn.disabled = true;
+            deleteBtn.classList.add('btn-disabled');
+        }
+        else {
+            deleteBtn.disabled = false;
+            deleteBtn.classList.remove('btn-disabled');
+        }
+    }
+    checkSelectedCheckboxes()
 
     // ##### connecting to services #####
     const addSpotify = document.querySelector('#add-spotify');
