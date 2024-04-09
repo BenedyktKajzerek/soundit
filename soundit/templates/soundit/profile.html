@@ -24,8 +24,6 @@
 
     <div class="profile">
 
-        <div class="modal"></div>
-
         <div class="responsive-nav">
 
             <!-- Services Section -->
@@ -180,7 +178,7 @@
                     <div>
                         <h2>Playlists</h2>
                         <h5>
-                            {{ general.total.playlists }} total | <span>0</span> selected
+                            {{ general.total.playlists }} total | <span id="number-of-selected"></span> selected
                         </h5>
                     </div>
                             
@@ -309,6 +307,53 @@
             </main>
         </div>
             
+        <!-- modal -->
+
+        <div class="modal-overlay">
+            
+            <!-- modal convert playlist -->
+            <div class="modal-container-convert">
+                <div class="modal-container">
+
+                    <button class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <h3>CONVERT YOUR PLAYLIST</h3>
+                    
+                </div>
+            </div>
+            
+            <!-- modal delete playlist -->
+            <div class="modal-container-delete">
+                <div class="modal-container">
+
+                    <button class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <h3>CONFRIM YOUR CHOICE</h3>
+                    <p>Are you sure you want to delete selected playlists from your library?</p>
+                    
+                    <button class="modal-delete-btn">
+                        DELETE
+                    </button>
+
+                </div>
+            </div>
+                
+        </div>
+
+        <!-- modal settings
+        <div class="modal-container-settings">
+    
+            <h3>Settings</h3>
+            <button class="modal-close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+        </div> -->
+
     </div>
 
 </body>

@@ -1,9 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // ##### responsive navbar #####
+    
+    // services
+    const addSpotify = document.querySelector('#add-spotify');
+    const addYouTube = document.querySelector('#add-youtube');
+    
+    // navbar 
     const nav = document.querySelector('.responsive-nav');
     const navBtn = document.querySelector('.hamburger');
+    const settingsBtn = document.querySelector('#settings-btn');
 
+    // header - playlist options
+    const numberOfSelected = document.querySelector('#number-of-selected');
+    const selectAllBtn = document.querySelector('.select-all');
+    const convertBtn = document.querySelector('#convert-btn');
+    const deleteBtn = document.querySelector('#delete-btn');
+    const searchPlaylist = document.querySelector('#searchPlaylist')
+
+    // playlists
+    const playlists = document.querySelectorAll('.playlist');
+    const checkboxes = document.querySelectorAll('.playlist-checkbox');
+
+    // modal
+    const modal = document.querySelector('.modal-overlay');
+    const closeBtns = document.querySelectorAll('.modal-close-btn');
+    const modalContainerConvert = document.querySelector('.modal-container-convert');
+    const modalContainerDelete = document.querySelector('.modal-container-delete');
+    const modalDeleteBtn = document.querySelector('.modal-delete-btn');
+    
+    let checked = [];
+
+    // ##### responsive navbar #####
+    
     window.addEventListener('click', function(e) {
         if (navBtn.contains(e.target)) {
             nav.classList.add('display-nav');
@@ -14,18 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ##### settings #####
-    const settingsBtn = document.querySelector('#settings-btn');
 
     settingsBtn.addEventListener('click', () => {
-        // document.querySelector('.settings').classList.toggle('display-block');        
         console.log("settings");
     });
 
     // ##### search playlist #####
-    const playlists = document.querySelectorAll('.playlist');
 
     // search playlists by title
-    document.querySelector('#searchPlaylist').addEventListener('input', function() {
+    searchPlaylist.addEventListener('input', function() {
         const searchValue = this.value.toLowerCase();
 
         playlists.forEach(function(playlist) {
@@ -37,18 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
             else {
                 playlist.style.display = 'none';
             }
-
         });
-
     });
 
     // ##### selecting playlists #####
-    const checkboxes = document.querySelectorAll('.playlist-checkbox');
-    
-    let checked = [];
-    
-    checkboxes.forEach(function(checkbox) {
 
+    checkboxes.forEach(function(checkbox) {
+        // style checkboxes and update checked list
         checkbox.addEventListener('change', function() {
             if (this.checked) {
                 // style checkbox (select-div and num-add)
@@ -67,12 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     checked.splice(index, 1);
                 }
             }
-            checkSelectedCheckboxes()
+            checkSelectedCheckboxes();
         });
     });
 
     // select all playlists at once
-    document.querySelector('.select-all').addEventListener('change', function() {
+    selectAllBtn.addEventListener('change', function() {
         if (this.checked) {
             checkboxes.forEach(function(checkbox) {
                 checkbox.checked = true;
@@ -97,16 +116,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });        
         }
-        checkSelectedCheckboxes()
+        checkSelectedCheckboxes();
     });
 
-    // playlist options
-    const convertBtn = document.querySelector('#convert-btn');
-    const deleteBtn = document.querySelector('#delete-btn');
-
+    // update currently available playlist options (convert, delete)
     function checkSelectedCheckboxes() {
+        const len = checked.length;
+
         // disable/enable convert button
-        if (checked.length !== 1) {
+        if (len !== 1) {
             convertBtn.disabled = true;
             convertBtn.classList.add('btn-disabled');
         }
@@ -114,9 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
             convertBtn.disabled = false;
             convertBtn.classList.remove('btn-disabled');
         }
-        
         // disable/enable delete button
-        if (checked.length === 0) {
+        if (len === 0) {
             deleteBtn.disabled = true;
             deleteBtn.classList.add('btn-disabled');
         }
@@ -124,24 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteBtn.disabled = false;
             deleteBtn.classList.remove('btn-disabled');
         }
+
+        numberOfSelected.innerHTML = len;
     }
-    checkSelectedCheckboxes()
+    checkSelectedCheckboxes();
 
-    // ##### connecting to services #####
-    const addSpotify = document.querySelector('#add-spotify');
-    const addYouTube = document.querySelector('#add-youtube');
-
-    document.querySelector('.add-service').addEventListener('click', () => {
-        document.querySelector('.services-to-connect').classList.toggle('display-block');
-    });
-
-    addSpotify.addEventListener('click', () => {
-        authenticateSpotify();
-    });
-
-    addYouTube.addEventListener('click', () => {
-        authenticateYouTube();
-    });
+    // ##### modal #####
 
     // ##### Spotify API Connection #####
     function authenticateSpotify() {
@@ -156,9 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(data);
                     // Open prepared url from class AuthURL
                     window.location.replace(data.url);
-                })
+                });
             }
-        })
+        });
     }
     
     // ##### YouTube API Connection #####
@@ -174,9 +179,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(data);
                     // Open prepared url from class AuthURL
                     window.location.replace(data.url[0]);
-                })
+                });
             }
-        })
+        });
     }
+
+    function deletePlaylist() {
+        console.log("DELETE PLAYLIST");
+    }
+    
+    // ##### EventListeners #####
+
+    // display services available to connect
+    document.querySelector('.add-service').addEventListener('click', () => {
+        document.querySelector('.services-to-connect').classList.toggle('display-block');
+    });
+
+    // connect with spotify service
+    try {
+        addSpotify.addEventListener('click', () => {
+            authenticateSpotify();
+        });
+    } catch (err) { /* ignore err */ }
+    
+    // connect with youtube service
+    try {
+        addYouTube.addEventListener('click', () => {
+            authenticateYouTube();
+        });
+    } catch (err) { /* ignore err */ }
+
+    // open modal with settings
+    // settingsBtn.addEventListener('click', () => {
+    //     modal.classList.add('open-modal');
+    // })
+
+    // open modal to convert playlist
+    convertBtn.addEventListener('click', () => {
+        modal.classList.add('open-modal');
+        modalContainerConvert.classList.add('display-block');
+    });
+    
+    // open modal to delete playlists
+    deleteBtn.addEventListener('click', () => {
+        modal.classList.add('open-modal');
+        modalContainerDelete.classList.add('display-block');
+    });
+
+    // close and hide modal
+    closeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function() {
+            modal.classList.remove('open-modal');
+            btn.parentElement.parentElement.classList.remove('display-block');
+        });
+    });
+
+    modalDeleteBtn.addEventListener('click', () => {
+        deletePlaylist();
+    });
 
 });
