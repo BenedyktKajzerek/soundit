@@ -534,6 +534,108 @@ body {
     margin: 24px 0 32px;
 }
 
+.convert-content {
+    height: 538px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.privacy-group {
+    display: flex;
+    align-items: end;
+}
+
+.privacy-group div {
+    position: relative;
+    top: 2px;
+    margin-right: 16px;
+}
+
+.form-group {
+    width: 90%;
+    margin: 12px 0;
+}
+
+.form-group span {
+    display: inline-block;
+    color: var(--grey);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    color: var(--grey);
+    font-size: 18px;
+    padding: 12px 16px 12px 42px;
+    background-color: transparent;
+    border: 1px solid var(--dark-grey);
+    border-radius: 10px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    height: 92px;
+    min-height: 50px;
+    max-height: 276px;
+    overflow-y: auto;
+}
+
+.form-group input:hover, 
+.form-group input:focus,
+.form-group textarea:hover,
+.form-group textarea:focus {
+    border-color: var(--grey2);
+}
+
+.form-group .input-icon {
+    position: relative;
+}
+
+.form-group .input-icon i {
+    position: absolute;
+    color: var(--grey2);
+    font-size: 20px;
+    top: 14px;
+    left: 12px;
+}
+
+.modal-convert-btn,
+.modal-delete-btn {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 8px;
+    color: var(--light-grey);
+}
+
+.modal-convert-btn {
+    background-color: var(--second);
+}
+
+.modal-delete-btn {
+    background-color: var(--red2);
+}
+
+.modal-convert-btn:hover {
+    cursor: pointer;
+    background-color: var(--third);
+}
+
+.modal-delete-btn:hover {
+    cursor: pointer;
+    background-color: var(--red);
+}
+
 .modal-container-delete {
     position: relative;
     height: 250px;
@@ -554,23 +656,6 @@ body {
     text-align: center;
     padding: 0 32px;
     margin-bottom: 56px;
-}
-
-.modal-delete-btn {
-    width: 100%;
-    background-color: var(--red2);
-    color: var(--light-grey);
-    border: none;
-    outline: none;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 12px;
-    border-radius: 8px;
-}
-
-.modal-delete-btn:hover {
-    cursor: pointer;
-    background-color: var(--red);
 }
 
 .modal-container {

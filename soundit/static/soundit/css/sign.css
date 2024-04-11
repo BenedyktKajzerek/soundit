@@ -119,8 +119,7 @@ form {
 }
 
 .submit-btn:hover {
-    background-color: var(--light-grey);
-    color: var(--black);
+    background-color: var(--second);
 }
 
 .sign-other {

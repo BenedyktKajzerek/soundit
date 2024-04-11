@@ -25,7 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeBtns = document.querySelectorAll('.modal-close-btn');
     const modalContainerConvert = document.querySelector('.modal-container-convert');
     const modalContainerDelete = document.querySelector('.modal-container-delete');
+    
+    const title = document.querySelector('#title');
+    const description = document.querySelector('#description');
+    const privacyCheckbox = document.querySelector('#privacy-status');
+    
     const modalDeleteBtn = document.querySelector('.modal-delete-btn');
+    const modalConvertBtn = document.querySelector('.modal-convert-btn');
     
     let checked = [];
 
@@ -184,6 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function convertPlaylist() {
+        console.log("CONVERT PLAYLIST");
+    }
+
     function deletePlaylist() {
         console.log("DELETE PLAYLIST");
     }
@@ -216,12 +226,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // open modal to convert playlist
     convertBtn.addEventListener('click', () => {
+        let playlist = checked[0].parentElement.parentElement.parentElement;
+
+        // use title and description from current playlist
+        title.value = playlist.dataset.playlistname;
+        description.value = playlist.dataset.playlistdescription;
+
+        // show modal
         modal.classList.add('open-modal');
         modalContainerConvert.classList.add('display-block');
     });
     
     // open modal to delete playlists
     deleteBtn.addEventListener('click', () => {
+        // show modal
         modal.classList.add('open-modal');
         modalContainerDelete.classList.add('display-block');
     });
@@ -234,6 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // convert playlist
+    modalConvertBtn.addEventListener('click', () => {
+        convertPlaylist();
+    });
+    
+    // delete playlist
     modalDeleteBtn.addEventListener('click', () => {
         deletePlaylist();
     });

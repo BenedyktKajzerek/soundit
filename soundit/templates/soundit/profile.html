@@ -235,7 +235,7 @@
                     </div>
 
                     {% for playlist in playlists_spotify.items %}
-                        <div class="playlist" data-playlistname="{{ playlist.name }}">
+                        <div class="playlist" data-playlistname="{{ playlist.name }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.description }}">
 
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter }}</span>
@@ -272,7 +272,7 @@
                     {% endfor %}
 
                     {% for playlist in playlists_youtube.items %}
-                        <div class="playlist" data-playlistname="{{ playlist.snippet.title }}">
+                        <div class="playlist" data-playlistname="{{ playlist.snippet.title }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.snippet.description }}">
 
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter|add:playlists_spotify.total }}</span>
@@ -320,6 +320,44 @@
                     </button>
                     
                     <h3>CONVERT YOUR PLAYLIST</h3>
+
+                    <div class="convert-content">
+                        
+                        <div class="form-group">
+                            <label for="title">
+                                <span>Title</span>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-t"></i>
+                                </div>
+                                <input type="text" id="title" name="title" autofocus required>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">
+                                <span>Description</span>
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-d"></i>
+                                </div>
+                                <textarea name="description" id="description"></textarea>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group privacy-group">
+                            <div>
+                                <span>Privacy&nbsp;</span>(check to set as public)
+                            </div>
+                            <label class="select-div select-playlist">
+                                <input type="checkbox" id="privacy-status"></input>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <button class="modal-convert-btn">
+                        CONVERT
+                    </button>
                     
                 </div>
             </div>
