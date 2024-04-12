@@ -548,8 +548,6 @@ body {
 }
 
 .privacy-group div {
-    position: relative;
-    top: 2px;
     margin-right: 16px;
 }
 
@@ -606,7 +604,28 @@ body {
     left: 12px;
 }
 
+.convert-info {
+    margin-top: 64px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.spotify {
+    color: var(--spotify);
+    font-size: inherit;
+    margin: 0;
+}
+
+.youtube {
+    color: var(--youtube);
+    font-size: inherit;
+    margin: 0;
+}
+
+.modal-next-btn,
 .modal-convert-btn,
+.modal-failed-btn,
 .modal-delete-btn {
     width: 100%;
     border: none;
@@ -618,7 +637,9 @@ body {
     color: var(--light-grey);
 }
 
-.modal-convert-btn {
+.modal-next-btn,
+.modal-convert-btn,
+.modal-failed-btn {
     background-color: var(--second);
 }
 
@@ -626,7 +647,9 @@ body {
     background-color: var(--red2);
 }
 
-.modal-convert-btn:hover {
+.modal-next-btn:hover,
+.modal-convert-btn:hover,
+.modal-failed-btn:hover {
     cursor: pointer;
     background-color: var(--third);
 }

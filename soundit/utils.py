@@ -19,7 +19,7 @@ API_KEY_YT = os.getenv("API_KEY_YT")
 CLIENT_ID_YT = os.getenv("CLIENT_ID_YT")
 CLIENT_SECRET_YT = os.getenv("CLIENT_SECRET_YT")
 
-BASE_URL_SPOTIFY = "https://api.spotify.com/v1/me/"
+BASE_URL_SPOTIFY = "https://api.spotify.com/v1/"
 BASE_URL_YOUTUBE = "https://youtube.googleapis.com/youtube/v3/"
 
 token_classes = {

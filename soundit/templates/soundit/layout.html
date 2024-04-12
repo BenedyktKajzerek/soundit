@@ -15,9 +15,6 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'soundit/css/style.css' %}">
 
-    <!-- JavaScript -->
-    <script src="{% static 'soundit/js/script.js' %}"></script>
-
     {% block head %}{% endblock %}
 
     <title>{% block title %}Soundit - Transfer playlists between streaming services{% endblock %}</title>
@@ -108,6 +105,11 @@
             </div>
         </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'soundit/js/script.js' %}"></script>
+
+    {% block javascript %}{% endblock %}
 
 </body>
 </html>

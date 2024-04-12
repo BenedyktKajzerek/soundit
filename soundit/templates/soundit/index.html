@@ -4,7 +4,6 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'soundit/css/index.css' %}">
-    <script src="{% static 'soundit/js/index.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -13,7 +12,7 @@
         <div class="container">
 
             <h1>
-                Transfer songs & <span class="nowrap">playlists from</span>
+                Transfer songs & playlists&nbsp;from
                 <br>
                 <span class="spotify">Spotify</span> to
                 <span class="youtube">YouTube</span>
@@ -291,4 +290,8 @@
         </div>
     </section>
     
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'soundit/js/index.js' %}"></script>
 {% endblock %}

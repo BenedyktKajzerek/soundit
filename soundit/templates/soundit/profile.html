@@ -15,9 +15,6 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'soundit/css/profile.css' %}">
 
-    <!-- JavaScript -->
-    <script src="{% static 'soundit/js/profile.js' %}"></script>
-
     <title>Soundit | Profile</title>
 </head>
 <body>
@@ -311,8 +308,8 @@
 
         <div class="modal-overlay">
             
-            <!-- modal convert playlist -->
-            <div class="modal-container-convert">
+            <!-- modal convert playlist (step 1) -->
+            <div class="modal-container-convert" id="modal-container-convert">
                 <div class="modal-container">
 
                     <button class="modal-close-btn">
@@ -353,15 +350,80 @@
                             </label>
                         </div>
 
+                        <div class="convert-info">
+                            Transfer from
+                            </br>
+                            <span class="spotify">Spotify</span> to
+                            <span class="youtube">YouTube</span>
+                        </div>
+
                     </div>
 
-                    <button class="modal-convert-btn">
-                        CONVERT
+                    <button class="modal-next-btn modal-confirm-btn" value="next">
+                        NEXT
                     </button>
                     
                 </div>
             </div>
             
+            <!-- modal convert playlist (step 2) -->
+            <div class="modal-container-convert" id="modal-container-tracks">
+                <div class="modal-container">
+                    
+                    <button class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <h3>CONVERT YOUR PLAYLIST</h3>
+
+                    <div class="convert-content">
+                        
+                        <h2>SELECT TRACKS TO TRANSFER</h2>
+
+                        <div>track 1</div>
+                        <div>track 2</div>
+                        <div>track 3</div>
+                        <div>track 4</div>
+                        <div>track 5</div>
+
+                    </div>
+
+                    <button class="modal-convert-btn modal-confirm-btn" value="convert">
+                        CONVERT
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- modal convert playlist (step 3) -->
+            <div class="modal-container-convert" id="modal-container-failed">
+                <div class="modal-container">
+                    
+                    <button class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <h3>CONVERT YOUR PLAYLIST</h3>
+
+                    <div class="convert-content">
+                        
+                        <h2>TRACKS THAT COULDN'T BE TRANSFERED</h2>
+
+                        <div>track 1</div>
+                        <div>track 2</div>
+                        <div>track 3</div>
+                        <div>track 4</div>
+                        <div>track 5</div>
+
+                    </div>
+
+                    <button class="modal-failed-btn modal-confirm-btn" value="close">
+                        CLOSE
+                    </button>
+
+                </div>
+            </div>
+
             <!-- modal delete playlist -->
             <div class="modal-container-delete">
                 <div class="modal-container">
@@ -370,8 +432,8 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     
-                    <h3>CONFRIM YOUR CHOICE</h3>
-                    <p>Are you sure you want to delete selected playlists from your library?</p>
+                    <h3>ARE YOU SURE</h3>
+                    <p>Confirm that you want to delete selected playlists from your library.</p>
                     
                     <button class="modal-delete-btn">
                         DELETE
@@ -393,6 +455,9 @@
         </div> -->
 
     </div>
+
+    <!-- JavaScript -->
+    <script type="module" src="{% static 'soundit/js/profile.js' %}"></script>
 
 </body>
 </html>

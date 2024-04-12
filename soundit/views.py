@@ -13,6 +13,7 @@ import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
+from django.http import JsonResponse
 
 from django.utils import timezone
 from datetime import timedelta
@@ -205,7 +206,6 @@ def profile(request):
     is_spotify_connected = SpotifyToken.objects.only('user').filter(user=request.user).exists()
     is_youtube_connected = YouTubeToken.objects.only('user').filter(user=request.user).exists()
     
-    total_playlists = total_tracks = total_albums = total_artists = 0
     response_spotify = response_youtube = None
 
     general = {
@@ -235,7 +235,7 @@ def profile(request):
         is_authenticated(request.user, "spotify")
 
         # Get playlists
-        endpoint = 'playlists'
+        endpoint = 'me/playlists'
         response_spotify = api_request(request.user, "spotify", endpoint)
 
         # general
@@ -273,6 +273,7 @@ def profile(request):
 def about(request):
     return render(request, "soundit/about.html")
 
+def get_user_access_token(request, service):
+    response = {'access_token': get_user_token(request.user, service).access_token}
 
-def transfer(request):
-    return render(request, "soundit/transfer.html")
+    return JsonResponse(response)
