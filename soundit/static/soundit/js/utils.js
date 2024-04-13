@@ -14,23 +14,34 @@ export function authenticateService(service) {
                 else if (service === "youtube") window.location.replace(data.url[0]);
             });
         }
-    });
+    })
+    .catch(error => console.log(error));
 }
 
-export function getPlaylistItems(service, playlistId) {
-    // get user access token
-    fetch(`get_user_access_token/${service}`)
-    .then(response => response.json())
-    .then(data => {
-        
-        // retrieve playlist items
-        fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-            method: 'GET',
-            headers: {'Authorization': `Bearer ` + data['access_token']},
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        });
+export async function getPlaylistItems(service, playlistId) {
+    // Step 1: get user access token
+    const response = await fetch(`get_user_access_token/${service}`);
+
+    // handling an error
+    if (!response.ok) {
+        throw new Error(`An error has occured: ${response.status}`);
+    }
+
+    const access_token = await response.json();
+
+
+    // Step 2: retrieve playlist items
+    const response2 = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        method: 'GET',
+        headers: {'Authorization': `Bearer ` + access_token['access_token']},
     });
+
+    // handling an error
+    if (!response2.ok) {
+        throw new Error(`An error has occured: ${response.status}`);
+    }
+
+    const tracks = await response2.json();
+
+    return tracks;
 }

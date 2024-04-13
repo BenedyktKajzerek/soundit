@@ -156,19 +156,44 @@ checkSelectedCheckboxes();
 
 // ##### Modal - converting/deleting playlists #####
 
-function showTracksBeforeConverting() {
-    // save users configuration 
+async function showTracksBeforeConverting() {
+    // save user configuration 
     const service = "spotify";
     const title = document.querySelector('#title').value;
     const description = document.querySelector('#description').value;
     const privacyStatus = document.querySelector('#privacy-status').checked;
+    const tracksContainer = document.querySelector('#tracks-container');
     const playlistId = checked[0].parentElement.parentElement.parentElement.dataset.playlistid;
+
+    // get playlist items
+    const items = await getPlaylistItems(service, playlistId);
+
+    // Create a track element
+    const trackElem = document.querySelector('.track-container');
+    
+    // iterate over every track and edit it
+    for (let i = 0, len = items['items'].length; i < len; i++) {
+        const clone = trackElem.cloneNode(true);
+        tracksContainer.appendChild(clone);
+
+        let track = items['items'][i]['track'];
+
+        clone.dataset.trackid = track['id'];
+        clone.querySelector('#track-number').innerHTML = i + 1;
+        clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
+        clone.querySelector('#track-title').innerHTML = track['name'];
+        clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
+        clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
+        clone.querySelector('.track-checkbox').checked = true;
+
+        console.log(items['items'][i]);
+    }
+
+    // hide "template" track element
+    trackElem.style.display = "none";
 
     modalContainerConvert.classList.remove('display-block');
     modalContainerTracks.classList.add('display-block');
-
-
-    getPlaylistItems(service, playlistId);
 }
 
 function convertPlaylist() {

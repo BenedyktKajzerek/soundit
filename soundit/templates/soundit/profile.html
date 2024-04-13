@@ -231,9 +231,11 @@
 
                     </div>
 
-                    {% for playlist in playlists_spotify.items %}
-                        <div class="playlist" data-playlistname="{{ playlist.name }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.description }}">
+                    <div class="scroll-bar">
 
+                        {% for playlist in playlists_spotify.items %}
+                        <div class="playlist" data-playlistname="{{ playlist.name }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.description }}">
+                            
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter }}</span>
                                 <label class="select-div select-playlist">
@@ -241,7 +243,7 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-
+                            
                             <div class="platform">
                                 <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
                                 <div class="playlist-title">
@@ -250,27 +252,27 @@
                                     <span>{{ playlist.owner.display_name }}</span>
                                 </div>
                             </div>
-
+                            
                             <div class="tracks">
                                 <span>{{ playlist.tracks.total }} songs</span>
                             </div>
-
+                            
                             <div class="public">
                                 <span>
                                     {% if playlist.public %}
-                                        Public
+                                    Public
                                     {% else %}
-                                        Private
+                                    Private
                                     {% endif %}
                                 </span>
                             </div>
-
+                            
                         </div>
-                    {% endfor %}
-
-                    {% for playlist in playlists_youtube.items %}
+                        {% endfor %}
+                        
+                        {% for playlist in playlists_youtube.items %}
                         <div class="playlist" data-playlistname="{{ playlist.snippet.title }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.snippet.description }}">
-
+                            
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter|add:playlists_spotify.total }}</span>
                                 <label class="select-div select-playlist">
@@ -278,7 +280,7 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-
+                            
                             <div class="platform">
                                 <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="spotify">
                                 <div class="playlist-title">
@@ -287,18 +289,19 @@
                                     <span>{{ playlist.snippet.channelTitle }}</span>
                                 </div>
                             </div>
-
+                            
                             <div class="tracks">
                                 <span>{{ playlist.contentDetails.itemCount }} songs</span>
                             </div>
-
+                            
                             <div class="public">
                                 <span><!-- {{ playlist.status.privacyStatus }} --> Private</span>
                             </div>
-
+                            
                         </div>
-                    {% endfor %}
-                
+                        {% endfor %}
+                        
+                    </div>
                 </div>
 
             </main>
@@ -374,17 +377,31 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
 
-                    <h3>CONVERT YOUR PLAYLIST</h3>
+                    <h3>SELECT TRACKS TO TRANSFER</h3>
+                    
+                    <div class="convert-content" id="tracks-container">
+                                                
+                        <div class="track-container">
 
-                    <div class="convert-content">
-                        
-                        <h2>SELECT TRACKS TO TRANSFER</h2>
-
-                        <div>track 1</div>
-                        <div>track 2</div>
-                        <div>track 3</div>
-                        <div>track 4</div>
-                        <div>track 5</div>
+                            <div class="num" id="track-number">...</div>
+                            
+                            <div class="platform">
+                                <img id="track-image" src="" alt="track image">
+                                <div class="playlist-title">
+                                    <p id="track-title">...</p>
+                                    <span title="Explicit">E</span>
+                                    <span id="track-artists">...</span>
+                                </div>
+                            </div>
+                            
+                            <div class="track-check">
+                                <label class="select-div select-playlist">
+                                    <input class="track-checkbox" type="checkbox"></input>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                                
+                        </div>
 
                     </div>
 
