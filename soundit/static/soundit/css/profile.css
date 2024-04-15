@@ -618,14 +618,7 @@ body {
     text-align: center;
 }
 
-.spotify {
-    color: var(--spotify);
-    font-size: inherit;
-    margin: 0;
-}
-
-.youtube {
-    color: var(--youtube);
+.service-name {
     font-size: inherit;
     margin: 0;
 }

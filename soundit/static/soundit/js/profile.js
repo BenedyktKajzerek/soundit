@@ -18,7 +18,7 @@ const searchPlaylist = document.querySelector('#searchPlaylist')
 
 // playlists
 const playlists = document.querySelectorAll('.playlist');
-const checkboxes = document.querySelectorAll('.playlist-checkbox');
+const playlistsCheckboxes = document.querySelectorAll('.playlist-checkbox');
 
 // modal
 const modal = document.querySelector('.modal-overlay');
@@ -28,14 +28,24 @@ const modalContainerTracks = document.querySelector('#modal-container-tracks');
 const modalContainerFailed = document.querySelector('#modal-container-failed');
 const modalContainerDelete = document.querySelector('.modal-container-delete');
 
+// Step 1: modal (convert)
 const titleInput = document.querySelector('#title');
 const descriptionInput = document.querySelector('#description');
+const convertFromSpan = document.querySelector('#convert-from');
+const convertToSpan = document.querySelector('#convert-to');
+
+// Step 2: modal (convert)
+const tracksTotal = document.querySelector('#tracks-total');
+const tracksSelected = document.querySelector('#tracks-selected');
+const tracksContainer = document.querySelector('#tracks-container');
+
 
 const modalDeleteBtn = document.querySelector('.modal-delete-btn');
 
 const modalBtns = document.querySelectorAll('.modal-confirm-btn');
 
-let checked = [];
+let checkedPlaylists = [];
+let checkedTracks = [];
 
 // ##### responsive navbar #####
 
@@ -74,7 +84,7 @@ searchPlaylist.addEventListener('input', function() {
 
 // ##### selecting playlists #####
 
-checkboxes.forEach(function(checkbox) {
+playlistsCheckboxes.forEach(function(checkbox) {
     // style checkboxes and update checked list
     checkbox.addEventListener('change', function() {
         if (this.checked) {
@@ -83,15 +93,16 @@ checkboxes.forEach(function(checkbox) {
             this.parentElement.previousElementSibling.style.display = "none";
         
             // push selected playlist 
-            checked.push(this);
+            checkedPlaylists.push(this);
+            console.log(this);
         }
         else {
             this.parentElement.style.display = '';
             this.parentElement.previousElementSibling.style.display = "";
         
-            let index = checked.indexOf(this);
+            let index = checkedPlaylists.indexOf(this);
             if (index !== -1) {
-                checked.splice(index, 1);
+                checkedPlaylists.splice(index, 1);
             }
         }
         checkSelectedCheckboxes();
@@ -101,26 +112,26 @@ checkboxes.forEach(function(checkbox) {
 // select all playlists at once
 selectAllBtn.addEventListener('change', function() {
     if (this.checked) {
-        checkboxes.forEach(function(checkbox) {
+        playlistsCheckboxes.forEach(function(checkbox) {
             checkbox.checked = true;
             checkbox.parentElement.style.display = 'block';
             checkbox.parentElement.previousElementSibling.style.display = "none";
         
             // add only if not already in list
-            if (!checked.includes(checkbox)) {
-                checked.push(checkbox);
+            if (!checkedPlaylists.includes(checkbox)) {
+                checkedPlaylists.push(checkbox);
             }
         });
     }
     else {
-        checkboxes.forEach(function(checkbox) {
+        playlistsCheckboxes.forEach(function(checkbox) {
             checkbox.checked = false;
             checkbox.parentElement.style.display = '';
             checkbox.parentElement.previousElementSibling.style.display = "";
         
-            let index = checked.indexOf(checkbox);
+            let index = checkedPlaylists.indexOf(checkbox);
             if (index !== -1) {
-                checked.splice(index, 1);
+                checkedPlaylists.splice(index, 1);
             }
         });        
     }
@@ -129,7 +140,7 @@ selectAllBtn.addEventListener('change', function() {
 
 // update currently available playlist options (convert, delete)
 function checkSelectedCheckboxes() {
-    const len = checked.length;
+    const len = checkedPlaylists.length;
 
     // disable/enable convert button
     if (len !== 1) {
@@ -156,20 +167,30 @@ checkSelectedCheckboxes();
 
 // ##### Modal - converting/deleting playlists #####
 
-async function showTracksBeforeConverting() {
+async function showTrackListModal(service) {
     // save user configuration 
-    const service = "spotify";
     const title = document.querySelector('#title').value;
     const description = document.querySelector('#description').value;
     const privacyStatus = document.querySelector('#privacy-status').checked;
-    const tracksContainer = document.querySelector('#tracks-container');
-    const playlistId = checked[0].parentElement.parentElement.parentElement.dataset.playlistid;
+
+    const playlistId = checkedPlaylists[0].parentElement.parentElement.parentElement.dataset.playlistid;
 
     // get playlist items
     const items = await getPlaylistItems(service, playlistId);
 
+    console.log(items);
+
     // Create a track element
     const trackElem = document.querySelector('.track-container');
+
+    // show "template" track element back (incase selecting different playlist to convert)
+    trackElem.style.display = "";
+
+    // clear tracks from previously selected playlist
+    tracksContainer.innerHTML = ""; 
+
+    // clear tracks list when selecting new playlist
+    checkedTracks.length = 0;
     
     // iterate over every track and edit it
     for (let i = 0, len = items['items'].length; i < len; i++) {
@@ -177,6 +198,9 @@ async function showTracksBeforeConverting() {
         tracksContainer.appendChild(clone);
 
         let track = items['items'][i]['track'];
+        
+        // add track to track list
+        checkedTracks.push(track);
 
         clone.dataset.trackid = track['id'];
         clone.querySelector('#track-number').innerHTML = i + 1;
@@ -189,8 +213,27 @@ async function showTracksBeforeConverting() {
         console.log(items['items'][i]);
     }
 
+    // keep track of selected tracks
+    const tracksCheckboxes = document.querySelectorAll('.track-checkbox');
+    tracksCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            // push selected track to list
+            if (this.checked) checkedTracks.push(this);
+            // delete selected track from list
+            else {        
+                let index = checkedTracks.indexOf(this);
+                if (index !== -1) checkedTracks.splice(index, 1);
+            }
+            console.log(checkedTracks);
+        });
+    });
+
     // hide "template" track element
     trackElem.style.display = "none";
+
+    // update total and selected tracks
+    tracksTotal.innerHTML = items['total'];
+    tracksSelected.innerHTML = items['total'];
 
     modalContainerConvert.classList.remove('display-block');
     modalContainerTracks.classList.add('display-block');
@@ -233,11 +276,21 @@ try {
 
 // open convert modal
 convertBtn.addEventListener('click', () => {
-    const playlist = checked[0].parentElement.parentElement.parentElement;
+    const playlist = checkedPlaylists[0].parentElement.parentElement.parentElement;
 
     // use title and description from current playlist
     titleInput.value = playlist.dataset.playlistname;
     descriptionInput.value = playlist.dataset.playlistdescription;
+
+    // style "transfer from .. to .." spans
+    const service = playlist.dataset.service;
+    
+    const from = service === "spotify" ? "Spotify" : "YouTube";
+    const to = service === "spotify" ? "YouTube" : "Spotify";
+    convertFromSpan.innerHTML = from;
+    convertFromSpan.style.color = `var(--${service})`;
+    convertToSpan.innerHTML = to;
+    convertToSpan.style.color = `var(--${to.toLowerCase()})`;
 
     // show modal
     modal.classList.add('open-modal');
@@ -263,7 +316,10 @@ closeBtns.forEach(function (btn) {
 modalBtns.forEach(function(btn) {
     btn.addEventListener('click', () => {
         // show playlist's tracks (step 2)
-        if (btn.value === "next") showTracksBeforeConverting();
+        if (btn.value === "next") {
+            const service = convertFromSpan.innerHTML.toLowerCase();
+            showTrackListModal(service);
+        }
         // convert then show tracks that failed to transfer (step 3)
         else if (btn.value === "convert") convertPlaylist();
         // close modal

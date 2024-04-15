@@ -31,10 +31,28 @@ export async function getPlaylistItems(service, playlistId) {
 
 
     // Step 2: retrieve playlist items
-    const response2 = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-        method: 'GET',
-        headers: {'Authorization': `Bearer ` + access_token['access_token']},
-    });
+    let response2;
+    if (service === "spotify") {
+        response2 = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+            method: 'GET',
+            headers: {'Authorization': 'Bearer ' + access_token['access_token']},
+        }); 
+    }
+    else if (service === "youtube") {
+        response2 = await fetch('https://www.googleapis.com/youtube/v3/playlistItems', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + access_token['access_token'],
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                // 'part': [
+                //     'snippet'
+                //   ],
+                'maxResults': 50,
+                'playlistId': 'PL12as1GfI-WEWFw1nINKKoKL0QcEHr2Am'
+            },
+        });
+    }
 
     // handling an error
     if (!response2.ok) {

@@ -234,7 +234,7 @@
                     <div class="scroll-bar">
 
                         {% for playlist in playlists_spotify.items %}
-                        <div class="playlist" data-playlistname="{{ playlist.name }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.description }}">
+                        <div class="playlist" data-service="spotify" data-playlistid="{{ playlist.id }}" data-playlistname="{{ playlist.name }}" data-playlistdescription="{{ playlist.description }}">
                             
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter }}</span>
@@ -271,7 +271,7 @@
                         {% endfor %}
                         
                         {% for playlist in playlists_youtube.items %}
-                        <div class="playlist" data-playlistname="{{ playlist.snippet.title }}" data-playlistid="{{ playlist.id }}" data-playlistdescription="{{ playlist.snippet.description }}">
+                        <div class="playlist" data-service="youtube" data-playlistid="{{ playlist.id }}" data-playlistname="{{ playlist.snippet.title }}" data-playlistdescription="{{ playlist.snippet.description }}">
                             
                             <div class="num-add">
                                 <span class="num-span">{{ forloop.counter|add:playlists_spotify.total }}</span>
@@ -356,8 +356,8 @@
                         <div class="convert-info">
                             Transfer from
                             </br>
-                            <span class="spotify">Spotify</span> to
-                            <span class="youtube">YouTube</span>
+                            <span id="convert-from" class="service-name"></span> to
+                            <span id="convert-to" class="service-name"></span>
                         </div>
 
                     </div>
@@ -379,6 +379,10 @@
 
                     <h3>SELECT TRACKS TO TRANSFER</h3>
                     
+                    <div>
+                        <span id="tracks-total">283</span> total | <span id="tracks-selected">283</span> selected
+                    </div>
+
                     <div class="convert-content" id="tracks-container">
                                                 
                         <div class="track-container">
