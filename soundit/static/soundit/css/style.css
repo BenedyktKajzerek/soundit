@@ -1,12 +1,14 @@
 :root {
     --white: #fff;
+    --black: #000;
     --light-grey: #dfe7ec;
     --grey: rgb(172, 177, 193);
-    --black: #000;
+    --grey2: rgb(104, 108, 121);
+    --dark-grey: rgb(74, 78, 91);
 
     --bg2: rgb(25, 29, 39);
     --bg: rgb(34, 38, 51);
-    
+
     --primary: #7858A6;
     --second: #5B4B8A;
     --third: #4C3575;
@@ -31,6 +33,28 @@
 body {
 	min-height: 100vh;
     font-family: Helvetica, Arial, sans-serif;
+}
+
+/* === Scrollbar === */
+
+/* width */
+::-webkit-scrollbar {
+    width: 14px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--bg2); 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--grey); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--grey2); 
 }
 
 /* ===== Nav Top ===== */

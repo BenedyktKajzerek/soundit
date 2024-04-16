@@ -8,7 +8,7 @@ export function authenticateService(service) {
             fetch(`/profile/${service}/get-auth-url`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                
                 // Open prepared url from class AuthURL
                 if (service === "spotify") window.location.replace(data.url);
                 else if (service === "youtube") window.location.replace(data.url[0]);
@@ -20,9 +20,10 @@ export function authenticateService(service) {
 
 export async function getPlaylistItems(service, playlistId) {
     // Step 1: get user access token
-    const response = await fetch(`get_user_access_token/${service}`);
+    const response = await fetch(`get_user_access_token/${service}`)
+    .catch(error => console.log(error)); // errors strictly in promises
 
-    // handling an error
+    // Check server HTTP response (status code 200-299)
     if (!response.ok) {
         throw new Error(`An error has occured: ${response.status}`);
     }
@@ -36,25 +37,24 @@ export async function getPlaylistItems(service, playlistId) {
         response2 = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
             method: 'GET',
             headers: {'Authorization': 'Bearer ' + access_token['access_token']},
-        }); 
+        }).catch(error => console.log(error)); // errors strictly in promises
     }
     else if (service === "youtube") {
-        response2 = await fetch('https://www.googleapis.com/youtube/v3/playlistItems', {
+        response2 = await fetch('https://youtube.googleapis.com/youtube/v3/playlistItems?' + new URLSearchParams({
+            'part': 'snippet,contentDetails,status',
+            'maxResults': 50,
+            'playlistId': playlistId,
+            'key': access_token['api_key_yt']
+        }), {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + access_token['access_token'],
-                'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                // 'part': [
-                //     'snippet'
-                //   ],
-                'maxResults': 50,
-                'playlistId': 'PL12as1GfI-WEWFw1nINKKoKL0QcEHr2Am'
             },
-        });
+        }).catch(error => console.log(error)); // errors strictly in promises
     }
 
-    // handling an error
+    // Check server HTTP response (status code 200-299)
     if (!response2.ok) {
         throw new Error(`An error has occured: ${response.status}`);
     }

@@ -1,10 +1,10 @@
 :root {
     --white: #fff;
+    --black: #000;
     --light-grey: #dfe7ec;
     --grey: rgb(172, 177, 193);
     --grey2: rgb(104, 108, 121);
     --dark-grey: rgb(74, 78, 91);
-    --black: #000;
 
     --bg-dark: rgb(25, 29, 39);
     --bg: rgb(34, 38, 51);
@@ -46,6 +46,28 @@ body {
 
 .responsive-nav {
     display: flex;
+}
+
+/* === Scrollbar === */
+
+/* width */
+::-webkit-scrollbar {
+    width: 14px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--bg-dark); 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--grey); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--grey2); 
 }
 
 /* ===== Services Section ===== */
@@ -662,6 +684,14 @@ body {
 /* === Track container (modal convert) === */
 #modal-container-tracks {
     padding: 16px 0;
+}
+
+#modal-container-tracks h3 {
+    margin: 20px 0 10px;
+}
+
+#modal-container-tracks h3 + div {
+    margin-bottom: 10px;
 }
 
 .modal-convert-btn {

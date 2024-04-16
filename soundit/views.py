@@ -276,4 +276,7 @@ def about(request):
 def get_user_access_token(request, service):
     response = {'access_token': get_user_token(request.user, service).access_token}
 
+    if service == "youtube":
+        response['api_key_yt'] = API_KEY_YT
+
     return JsonResponse(response)

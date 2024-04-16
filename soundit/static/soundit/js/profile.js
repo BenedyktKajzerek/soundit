@@ -146,17 +146,16 @@ function checkSelectedCheckboxes() {
     if (len !== 1) {
         convertBtn.disabled = true;
         convertBtn.classList.add('btn-disabled');
-    }
-    else {
+    } else {
         convertBtn.disabled = false;
         convertBtn.classList.remove('btn-disabled');
     }
+    
     // disable/enable delete button
     if (len === 0) {
         deleteBtn.disabled = true;
         deleteBtn.classList.add('btn-disabled');
-    }
-    else {
+    } else {
         deleteBtn.disabled = false;
         deleteBtn.classList.remove('btn-disabled');
     }
@@ -177,7 +176,6 @@ async function showTrackListModal(service) {
 
     // get playlist items
     const items = await getPlaylistItems(service, playlistId);
-
     console.log(items);
 
     // Create a track element
@@ -185,45 +183,20 @@ async function showTrackListModal(service) {
 
     // show "template" track element back (incase selecting different playlist to convert)
     trackElem.style.display = "";
-
     // clear tracks from previously selected playlist
     tracksContainer.innerHTML = ""; 
-
     // clear tracks list when selecting new playlist
     checkedTracks.length = 0;
     
     // iterate over every track and edit it
-    for (let i = 0, len = items['items'].length; i < len; i++) {
-        const clone = trackElem.cloneNode(true);
-        tracksContainer.appendChild(clone);
-
-        let track = items['items'][i]['track'];
-        
-        // add track to track list
-        checkedTracks.push(track);
-
-        clone.dataset.trackid = track['id'];
-        clone.querySelector('#track-number').innerHTML = i + 1;
-        clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
-        clone.querySelector('#track-title').innerHTML = track['name'];
-        clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
-        clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
-        clone.querySelector('.track-checkbox').checked = true;
-
-        console.log(items['items'][i]);
-    }
+    processTrack(service, items, trackElem, tracksContainer, checkedTracks);
 
     // keep track of selected tracks
     const tracksCheckboxes = document.querySelectorAll('.track-checkbox');
-    tracksCheckboxes.forEach(function(checkbox) {
+    tracksCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            // push selected track to list
-            if (this.checked) checkedTracks.push(this);
-            // delete selected track from list
-            else {        
-                let index = checkedTracks.indexOf(this);
-                if (index !== -1) checkedTracks.splice(index, 1);
-            }
+            // push/delete selected track from list
+            this.checked ? checkedTracks.push(this) : checkedTracks.splice(checkedTracks.indexOf(this), 1);
             console.log(checkedTracks);
         });
     });
@@ -237,6 +210,48 @@ async function showTrackListModal(service) {
 
     modalContainerConvert.classList.remove('display-block');
     modalContainerTracks.classList.add('display-block');
+}
+
+// process every track from selected playlist
+function processTrack(service, items, trackElem, tracksContainer, checkedTracks) {
+    // count needed to not include unavailable videos on youtube
+    let count = 1;
+
+    for (let i = 0, len = items['items'].length; i < len; i++) {
+        const item = items['items'][i];
+        let track;
+
+        if (service === "spotify") {
+            track = item['track'];
+        } else if (service === "youtube") {
+            // Ensure video is listed as public (available)
+            if (item['status']['privacyStatus'] !== "public") continue;
+            track = item;
+        }
+
+        const clone = trackElem.cloneNode(true);
+        tracksContainer.appendChild(clone);
+
+        // add track to track list
+        checkedTracks.push(track);
+
+        if (service === "spotify") {
+            clone.dataset.trackid = track['id'];
+            clone.querySelector('#track-number').innerHTML = i + 1;
+            clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
+            clone.querySelector('#track-title').innerHTML = track['name'];
+            clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
+        } else if (service === "youtube") {
+            clone.dataset.trackid = track['contentDetails']['videoId'];
+            clone.querySelector('#track-number').innerHTML = count;
+            clone.querySelector('#track-image').src = track['snippet']['thumbnails']['default']['url'];
+            clone.querySelector('#track-title').innerHTML = track['snippet']['title'];
+            clone.querySelector('#track-artists').innerHTML = track['snippet']['videoOwnerChannelTitle'];
+            count++;
+        }
+
+        clone.querySelector('.track-checkbox').checked = true;
+    }
 }
 
 function convertPlaylist() {
