@@ -115,35 +115,99 @@ def refresh_token(user, service):
     
 ##### Using API #####
 
-def api_request(user, service, endpoint, post_=False, put_=False):
+def api_request(user, service, endpoint):
+    """
+    Make an API request to the specified service.
+
+    Args:
+        user (User): The user object.
+        service (str): The name of the service (e.g., "spotify", "youtube").
+        endpoint (str): The API endpoint to call.
+
+    Returns:
+        dict: The JSON response from the API.
+        
+    Raises:
+        requests.exceptions.RequestException: If an error occurs during the request.
+    """
     token = get_user_token(user, service)
-    if service == "spotify":
-        headers = {'Authorization': f"Bearer {token.access_token}"}
-        response = requests.get(BASE_URL_SPOTIFY + endpoint, {}, headers=headers)
-    elif service == "youtube":
-        headers = {'Authorization': f"Bearer {token.access_token}", 'Accept': 'application/json'}
-        response = requests.get(BASE_URL_YOUTUBE + endpoint, {}, headers=headers)
+    headers = {'Authorization': f"Bearer {token.access_token}"}
+
+    if service == "youtube":
+        headers['Accept'] = 'application/json'
 
     try:
+        url = BASE_URL_SPOTIFY + endpoint if service == "spotify" else BASE_URL_YOUTUBE + endpoint
+        response = requests.get(url, {}, headers=headers)
+
+        # Raise exception for 4xx or 5xx status codes
+        response.raise_for_status()  
+
         return response.json()
-    except:
-        return {'Error': 'Error'}
+    except requests.exceptions.RequestException as e:
+        raise e
 
-##### YouTube API #####
-    
-def get_every_youtube_playlist(user, response_youtube):
-    # Go over every page extending the list with playlists
-    # YouTube shows only 5 playlists per 1 page (api call)
-    pageTimes = math.ceil(response_youtube['pageInfo']['totalResults'] / response_youtube['pageInfo']['resultsPerPage']) - 1
-    for i in range(pageTimes):
-        if i == 0:
-            nextPageToken = response_youtube['nextPageToken']
-        else:
-            nextPageToken = nextPageResponse['nextPageToken']
 
-        endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}&pageToken={nextPageToken}'
-        nextPageResponse = api_request(user, "youtube", endpoint)
+def get_every_youtube_playlist(user):
+    """
+    Retrieve all playlists for the given user from service.
 
-        response_youtube['items'].extend(nextPageResponse['items'])
-    
-    return response_youtube
+    Args:
+        user (User): The user object.
+
+    Returns:
+        dict: A dictionary containing all playlists.
+        
+    (same for get_every_spotify_playlist())
+    """
+    playlists = []
+    next_page_token = None
+
+    try:
+        while True:
+            endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&maxResults=50&key={API_KEY_YT}'
+            if next_page_token:
+                endpoint += f'&pageToken={next_page_token}'
+
+            # Get another playlist
+            response = api_request(user, "youtube", endpoint)
+            playlists.extend(response.get('items', []))
+
+            # Update values
+            next_page_token = response.get('nextPageToken')
+
+            # Check if there's more
+            if not next_page_token:
+                break
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error retrieving YouTube playlists: {e}")
+
+    return playlists
+
+
+def get_every_spotify_playlist(user):
+    playlists = []
+    offset = 0
+
+    try:
+        while True:
+            limit = 50
+            endpoint = f'me/playlists?limit={limit}&offset={offset}'
+
+            # Get another playlist
+            response = api_request(user, "spotify", endpoint)
+            playlists.extend(response.get('items', []))
+
+            # Update values
+            total = response.get('total', 0)
+            offset += limit
+
+            # Check if there's more
+            if offset >= total:
+                break
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error retrieving Spotify playlists: {e}")
+
+    return playlists

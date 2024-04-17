@@ -94,7 +94,6 @@ playlistsCheckboxes.forEach(function(checkbox) {
         
             // push selected playlist 
             checkedPlaylists.push(this);
-            console.log(this);
         }
         else {
             this.parentElement.style.display = '';
@@ -176,7 +175,6 @@ async function showTrackListModal(service) {
 
     // get playlist items
     const items = await getPlaylistItems(service, playlistId);
-    console.log(items);
 
     // Create a track element
     const trackElem = document.querySelector('.track-container');
@@ -195,9 +193,7 @@ async function showTrackListModal(service) {
     const tracksCheckboxes = document.querySelectorAll('.track-checkbox');
     tracksCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            // push/delete selected track from list
-            this.checked ? checkedTracks.push(this) : checkedTracks.splice(checkedTracks.indexOf(this), 1);
-            console.log(checkedTracks);
+            checkedTracks[this.dataset.id].isChecked = this.checked;
         });
     });
 
@@ -232,9 +228,6 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
         const clone = trackElem.cloneNode(true);
         tracksContainer.appendChild(clone);
 
-        // add track to track list
-        checkedTracks.push(track);
-
         if (service === "spotify") {
             clone.dataset.trackid = track['id'];
             clone.querySelector('#track-number').innerHTML = i + 1;
@@ -251,6 +244,13 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
         }
 
         clone.querySelector('.track-checkbox').checked = true;
+        clone.querySelector('.track-checkbox').dataset.id = i;
+
+        // add track to track list
+        checkedTracks.push({
+            'trackId': clone.dataset.trackid,
+            'isChecked': true,
+        });
     }
 }
 

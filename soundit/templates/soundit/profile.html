@@ -233,7 +233,7 @@
 
                     <div class="scroll-bar">
 
-                        {% for playlist in playlists_spotify.items %}
+                        {% for playlist in playlists_spotify %}
                         <div class="playlist" data-service="spotify" data-playlistid="{{ playlist.id }}" data-playlistname="{{ playlist.name }}" data-playlistdescription="{{ playlist.description }}">
                             
                             <div class="num-add">
@@ -269,38 +269,40 @@
                             
                         </div>
                         {% endfor %}
-                        
-                        {% for playlist in playlists_youtube.items %}
-                        <div class="playlist" data-service="youtube" data-playlistid="{{ playlist.id }}" data-playlistname="{{ playlist.snippet.title }}" data-playlistdescription="{{ playlist.snippet.description }}">
-                            
-                            <div class="num-add">
-                                <span class="num-span">{{ forloop.counter|add:playlists_spotify.total }}</span>
-                                <label class="select-div select-playlist">
-                                    <input type="checkbox" class="playlist-checkbox"></input>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            
-                            <div class="platform">
-                                <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="spotify">
-                                <div class="playlist-title">
-                                    <p>{{ playlist.snippet.title }}</p>
-                                    <span title="Explicit">E</span>
-                                    <span>{{ playlist.snippet.channelTitle }}</span>
+
+                        {% with spot=playlists_spotify|length %}
+                            {% for playlist in playlists_youtube %}
+                            <div class="playlist" data-service="youtube" data-playlistid="{{ playlist.id }}" data-playlistname="{{ playlist.snippet.title }}" data-playlistdescription="{{ playlist.snippet.description }}">
+                                
+                                <div class="num-add">
+                                    <span class="num-span">{{ forloop.counter|add:spot }}</span>
+                                    <label class="select-div select-playlist">
+                                        <input type="checkbox" class="playlist-checkbox"></input>
+                                        <span class="checkmark"></span>
+                                    </label>
                                 </div>
+                                
+                                <div class="platform">
+                                    <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="spotify">
+                                    <div class="playlist-title">
+                                        <p>{{ playlist.snippet.title }}</p>
+                                        <span title="Explicit">E</span>
+                                        <span>{{ playlist.snippet.channelTitle }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="tracks">
+                                    <span>{{ playlist.contentDetails.itemCount }} songs</span>
+                                </div>
+                                
+                                <div class="public">
+                                    <span><!-- {{ playlist.status.privacyStatus }} --> Private</span>
+                                </div>
+                                
                             </div>
-                            
-                            <div class="tracks">
-                                <span>{{ playlist.contentDetails.itemCount }} songs</span>
-                            </div>
-                            
-                            <div class="public">
-                                <span><!-- {{ playlist.status.privacyStatus }} --> Private</span>
-                            </div>
-                            
-                        </div>
-                        {% endfor %}
-                        
+                            {% endfor %}
+                        {% endwith %}
+
                     </div>
                 </div>
 

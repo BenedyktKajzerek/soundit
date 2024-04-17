@@ -58,8 +58,24 @@ export async function getPlaylistItems(service, playlistId) {
     if (!response2.ok) {
         throw new Error(`An error has occured: ${response.status}`);
     }
+    
+    let tracks = await response2.json();
+    console.log(tracks);
 
-    const tracks = await response2.json();
+    tracks = getNextPlalistItems(service, tracks);
 
     return tracks;
+}
+
+function getNextPlalistItems(service, tracks) {
+    if (service === "spotify") {
+        if (!tracks['next']) return tracks;
+
+        console.log(1);
+    }
+    else if (service === "youtube") {
+        if (!tracks['nextPageToken']) return tracks;
+
+        console.log(1);
+    }
 }

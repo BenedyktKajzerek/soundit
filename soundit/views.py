@@ -206,8 +206,6 @@ def profile(request):
     is_spotify_connected = SpotifyToken.objects.only('user').filter(user=request.user).exists()
     is_youtube_connected = YouTubeToken.objects.only('user').filter(user=request.user).exists()
     
-    response_spotify = response_youtube = None
-
     general = {
         'user': {
             'username': request.user.username,
@@ -230,45 +228,36 @@ def profile(request):
         }
     }
 
+    # Update Spotify statistics if connected
+    spotify_playlists = youtube_playlists = None
     if is_spotify_connected:
-        # Check if needed to refresh token
         is_authenticated(request.user, "spotify")
+        spotify_playlists = get_every_spotify_playlist(request.user)
+        update_general_statistics(spotify_playlists, 'spotify', general)
 
-        # Get playlists
-        endpoint = 'me/playlists'
-        response_spotify = api_request(request.user, "spotify", endpoint)
-
-        # general
-        general['total']['playlists'] += response_spotify['total']
-        general['spotify']['playlists'] = response_spotify['total']
-        
-        for playlist in response_spotify['items']:
-            general['total']['tracks'] += playlist['tracks']['total']
-            general['spotify']['tracks'] += playlist['tracks']['total']
-
-
+    # Update YouTube statistics if connected
     if is_youtube_connected:
-        # Check if needed to refresh token
         is_authenticated(request.user, "youtube")
-
-        # Get playlists
-        endpoint = f'playlists?part=snippet%2CcontentDetails&mine=true&key={API_KEY_YT}'
-        response_youtube = api_request(request.user, "youtube", endpoint)
-        response_youtube = get_every_youtube_playlist(request.user, response_youtube)
-
-        # general
-        general['total']['playlists'] += len(response_youtube['items'])
-        general['youtube']['playlists'] = len(response_youtube['items'])
-
-        for playlist in response_youtube['items']:
-            general['total']['tracks'] += playlist['contentDetails']['itemCount']
-            general['youtube']['tracks'] += playlist['contentDetails']['itemCount']
+        youtube_playlists = get_every_youtube_playlist(request.user)
+        update_general_statistics(youtube_playlists, 'youtube', general)
 
     return render(request, "soundit/profile.html", {
         'general': general,
-        'playlists_spotify': response_spotify,
-        'playlists_youtube': response_youtube
+        'playlists_spotify': spotify_playlists,
+        'playlists_youtube': youtube_playlists
     })
+
+
+# Function to update general statistics
+def update_general_statistics(playlists, service_name, general_stats):
+    total_playlists = len(playlists)
+    total_tracks = sum(playlist['tracks']['total'] if service_name == 'spotify' else playlist['contentDetails']['itemCount'] for playlist in playlists)
+    
+    general_stats['total']['playlists'] += total_playlists
+    general_stats[service_name]['playlists'] = total_playlists
+    general_stats['total']['tracks'] += total_tracks
+    general_stats[service_name]['tracks'] += total_tracks
+
 
 def about(request):
     return render(request, "soundit/about.html")
