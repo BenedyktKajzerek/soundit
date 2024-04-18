@@ -1,4 +1,4 @@
-import { authenticateService, getPlaylistItems } from "/static/soundit/js/utils.js";
+import { authenticateService, getEveryPlaylistItem } from "/static/soundit/js/utils.js";
     
 // services
 const addSpotify = document.querySelector('#add-spotify');
@@ -174,7 +174,7 @@ async function showTrackListModal(service) {
     const playlistId = checkedPlaylists[0].parentElement.parentElement.parentElement.dataset.playlistid;
 
     // get playlist items
-    const items = await getPlaylistItems(service, playlistId);
+    const items = await getEveryPlaylistItem(service, playlistId);
 
     // Create a track element
     const trackElem = document.querySelector('.track-container');
@@ -213,24 +213,23 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
     // count needed to not include unavailable videos on youtube
     let count = 1;
 
-    for (let i = 0, len = items['items'].length; i < len; i++) {
-        const item = items['items'][i];
+    for (const item in items) {
         let track;
 
         if (service === "spotify") {
-            track = item['track'];
+            track = items[item]['track'];
         } else if (service === "youtube") {
             // Ensure video is listed as public (available)
-            if (item['status']['privacyStatus'] !== "public") continue;
-            track = item;
+            if (items[item]['status']['privacyStatus'] !== "public") continue;
+            track = items[item];
         }
-
+        
         const clone = trackElem.cloneNode(true);
         tracksContainer.appendChild(clone);
 
         if (service === "spotify") {
             clone.dataset.trackid = track['id'];
-            clone.querySelector('#track-number').innerHTML = i + 1;
+            clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
             clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
             clone.querySelector('#track-title').innerHTML = track['name'];
             clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
@@ -244,7 +243,7 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
         }
 
         clone.querySelector('.track-checkbox').checked = true;
-        clone.querySelector('.track-checkbox').dataset.id = i;
+        clone.querySelector('.track-checkbox').dataset.id = parseInt(item) + 1;
 
         // add track to track list
         checkedTracks.push({

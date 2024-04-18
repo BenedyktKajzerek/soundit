@@ -189,10 +189,10 @@ def get_every_youtube_playlist(user):
 def get_every_spotify_playlist(user):
     playlists = []
     offset = 0
+    limit = 50
 
     try:
         while True:
-            limit = 50
             endpoint = f'me/playlists?limit={limit}&offset={offset}'
 
             # Get another playlist

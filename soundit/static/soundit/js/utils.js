@@ -18,7 +18,7 @@ export function authenticateService(service) {
     .catch(error => console.log(error));
 }
 
-export async function getPlaylistItems(service, playlistId) {
+async function getPlaylistItems(service, playlistId, endpoint) {
     // Step 1: get user access token
     const response = await fetch(`get_user_access_token/${service}`)
     .catch(error => console.log(error)); // errors strictly in promises
@@ -30,11 +30,10 @@ export async function getPlaylistItems(service, playlistId) {
 
     const access_token = await response.json();
 
-
     // Step 2: retrieve playlist items
     let response2;
     if (service === "spotify") {
-        response2 = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        response2 = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks` + endpoint, {
             method: 'GET',
             headers: {'Authorization': 'Bearer ' + access_token['access_token']},
         }).catch(error => console.log(error)); // errors strictly in promises
@@ -45,7 +44,7 @@ export async function getPlaylistItems(service, playlistId) {
             'maxResults': 50,
             'playlistId': playlistId,
             'key': access_token['api_key_yt']
-        }), {
+        }) + endpoint, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + access_token['access_token'],
@@ -60,22 +59,65 @@ export async function getPlaylistItems(service, playlistId) {
     }
     
     let tracks = await response2.json();
-    console.log(tracks);
-
-    tracks = getNextPlalistItems(service, tracks);
 
     return tracks;
 }
 
-function getNextPlalistItems(service, tracks) {
+export async function getEveryPlaylistItem(service, playlistId) {
+    let tracks = [];
     if (service === "spotify") {
-        if (!tracks['next']) return tracks;
+        let offset = 0;
+        let limit = 100;
+        let total;
 
-        console.log(1);
+        try {
+            while (true) {
+                let endpoint = `?offset=${offset}&limit=${limit}`;
+
+                // Get another tracks
+                let response = await getPlaylistItems(service, playlistId, endpoint);
+                tracks = tracks.concat(response['items'], []);
+
+                // Update values
+                total = response['total'];
+                offset += limit;
+
+                // Check if there's more
+                if (offset >= total) break;
+             }
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     else if (service === "youtube") {
-        if (!tracks['nextPageToken']) return tracks;
+        let nextPageToken = null;
 
-        console.log(1);
+        try {
+            while (true) {
+                let endpoint = '';
+                if (nextPageToken) {
+                    endpoint += `&pageToken=${nextPageToken}`;
+                }
+
+                // Get another tracks
+                let response = await getPlaylistItems(service, playlistId, endpoint);
+                tracks = tracks.concat(response['items'], []);
+                
+                // Update values
+                nextPageToken = response['nextPageToken'];
+                
+                // Check if there's more
+                if (!nextPageToken) break;
+             }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    } 
+    else {
+        throw new Error("Unsupported service type");
     }
+
+    return tracks;
 }
