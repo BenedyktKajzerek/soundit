@@ -1,4 +1,10 @@
-import { authenticateService, getEveryPlaylistItem } from "/static/soundit/js/utils.js";
+import { 
+    authenticateService, 
+    getEveryPlaylistItem, 
+    createPlaylist,
+    searchTracksForItsId,
+    addItemsToPlaylist 
+} from "/static/soundit/js/utils.js";
     
 // services
 const addSpotify = document.querySelector('#add-spotify');
@@ -38,6 +44,7 @@ const convertToSpan = document.querySelector('#convert-to');
 const tracksTotal = document.querySelector('#tracks-total');
 const tracksSelected = document.querySelector('#tracks-selected');
 const tracksContainer = document.querySelector('#tracks-container');
+const convertPlaylistBtn = document.querySelector('.modal-convert-btn');
 
 
 const modalDeleteBtn = document.querySelector('.modal-delete-btn');
@@ -165,18 +172,68 @@ checkSelectedCheckboxes();
 
 // ##### Modal - converting/deleting playlists #####
 
+// process every track from selected playlist
+function processTrack(service, items, trackElem, tracksContainer, checkedTracks) {
+    // count needed to not include unavailable videos on youtube
+    let count = 1;
+
+    for (const item in items) {
+        let track, title, artist;
+
+        if (service === "spotify") {
+            track = items[item]['track'];
+        } else if (service === "youtube") {
+            // Ensure video is listed as public (available)
+            if (items[item]['status']['privacyStatus'] !== "public") continue;
+            track = items[item];
+        }
+    
+        const clone = trackElem.cloneNode(true);
+        tracksContainer.appendChild(clone);
+
+        if (service === "spotify") {
+            clone.dataset.trackid = track['id'];
+            clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
+            clone.querySelector('.track-checkbox').dataset.id = parseInt(item) + 1;
+            clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
+            title = track['name'];
+            artist = track['artists'][0]['name'];
+            clone.querySelector('#track-title').innerHTML = title;
+            clone.querySelector('#track-artists').innerHTML = artist;
+        } else if (service === "youtube") {
+            clone.dataset.trackid = track['contentDetails']['videoId'];
+            clone.querySelector('#track-number').innerHTML = count;
+            clone.querySelector('.track-checkbox').dataset.id = count;
+            clone.querySelector('#track-image').src = track['snippet']['thumbnails']['default']['url'];
+            title = track['snippet']['title'];
+            artist = track['snippet']['videoOwnerChannelTitle'];
+            clone.querySelector('#track-title').innerHTML = title;
+            clone.querySelector('#track-artists').innerHTML = artist;
+            count++;
+        }
+
+        clone.querySelector('.track-checkbox').checked = true;
+
+        // add track to track list
+        checkedTracks.push({
+            'trackId': clone.dataset.trackid,
+            'artist': artist,
+            'title': title,
+            'isChecked': true,
+        });
+    }
+}
+
 async function showTrackListModal(service) {
     // save user configuration 
     const title = document.querySelector('#title').value;
     const description = document.querySelector('#description').value;
-    const privacyStatus = document.querySelector('#privacy-status').checked;
+    const isSetToPublic = document.querySelector('#privacy-status').checked;
 
     const playlistId = checkedPlaylists[0].parentElement.parentElement.parentElement.dataset.playlistid;
 
-    // get playlist items
     const items = await getEveryPlaylistItem(service, playlistId);
 
-    // Create a track element
     const trackElem = document.querySelector('.track-container');
 
     // show "template" track element back (incase selecting different playlist to convert)
@@ -188,75 +245,48 @@ async function showTrackListModal(service) {
     
     // iterate over every track and edit it
     processTrack(service, items, trackElem, tracksContainer, checkedTracks);
+    
+    let len = checkedTracks.length; 
+
+    // update total and selected tracks
+    tracksTotal.innerHTML = len;
+    tracksSelected.innerHTML = len;
 
     // keep track of selected tracks
     const tracksCheckboxes = document.querySelectorAll('.track-checkbox');
     tracksCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            checkedTracks[this.dataset.id].isChecked = this.checked;
+            checkedTracks[this.dataset.id - 1].isChecked = this.checked;
+
+            if (this.checked) len++;
+            else if (!this.checked) len--;
+
+            tracksSelected.innerHTML = len;
         });
     });
 
     // hide "template" track element
     trackElem.style.display = "none";
 
-    // update total and selected tracks
-    tracksTotal.innerHTML = items['total'];
-    tracksSelected.innerHTML = items['total'];
-
+    // show current modal, hide previous one
     modalContainerConvert.classList.remove('display-block');
     modalContainerTracks.classList.add('display-block');
+
+    convertPlaylistBtn.addEventListener('click', () => {
+        convertPlaylist(service, title, description, isSetToPublic);
+    });
 }
 
-// process every track from selected playlist
-function processTrack(service, items, trackElem, tracksContainer, checkedTracks) {
-    // count needed to not include unavailable videos on youtube
-    let count = 1;
+async function convertPlaylist(service, title, description, isSetToPublic) {
 
-    for (const item in items) {
-        let track;
+    await createPlaylist(service, title, description, isSetToPublic);
+    
+    // await searchTracksForItsId(service);
 
-        if (service === "spotify") {
-            track = items[item]['track'];
-        } else if (service === "youtube") {
-            // Ensure video is listed as public (available)
-            if (items[item]['status']['privacyStatus'] !== "public") continue;
-            track = items[item];
-        }
-        
-        const clone = trackElem.cloneNode(true);
-        tracksContainer.appendChild(clone);
+    // await addItemsToPlaylist(service);
 
-        if (service === "spotify") {
-            clone.dataset.trackid = track['id'];
-            clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
-            clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
-            clone.querySelector('#track-title').innerHTML = track['name'];
-            clone.querySelector('#track-artists').innerHTML = track['artists'][0]['name'];
-        } else if (service === "youtube") {
-            clone.dataset.trackid = track['contentDetails']['videoId'];
-            clone.querySelector('#track-number').innerHTML = count;
-            clone.querySelector('#track-image').src = track['snippet']['thumbnails']['default']['url'];
-            clone.querySelector('#track-title').innerHTML = track['snippet']['title'];
-            clone.querySelector('#track-artists').innerHTML = track['snippet']['videoOwnerChannelTitle'];
-            count++;
-        }
-
-        clone.querySelector('.track-checkbox').checked = true;
-        clone.querySelector('.track-checkbox').dataset.id = parseInt(item) + 1;
-
-        // add track to track list
-        checkedTracks.push({
-            'trackId': clone.dataset.trackid,
-            'isChecked': true,
-        });
-    }
-}
-
-function convertPlaylist() {
     modalContainerTracks.classList.remove('display-block');
     modalContainerFailed.classList.add('display-block');
-    console.log("CONVERT PLAYLIST");
 }
 
 function deletePlaylist() {
@@ -329,15 +359,10 @@ closeBtns.forEach(function (btn) {
 // "confirmation" buttons in convert modal
 modalBtns.forEach(function(btn) {
     btn.addEventListener('click', () => {
-        // show playlist's tracks (step 2)
         if (btn.value === "next") {
             const service = convertFromSpan.innerHTML.toLowerCase();
             showTrackListModal(service);
-        }
-        // convert then show tracks that failed to transfer (step 3)
-        else if (btn.value === "convert") convertPlaylist();
-        // close modal
-        else {
+        } else if (btn.value === "close") {
             modal.classList.remove('open-modal');
             modalContainerFailed.classList.remove('display-block');
         }
