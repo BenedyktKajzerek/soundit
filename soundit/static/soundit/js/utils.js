@@ -1,5 +1,5 @@
 const BASE_URL_SPOTIFY = "https://api.spotify.com/v1/";
-const BASE_URL_YOUTUBE = "https://youtube.googleapis.com/youtube/v3/";
+const BASE_URL_YOUTUBE = "https://www.googleapis.com/youtube/v3/";
 
 // ##### API Connection for Spotify/Youtube #####
 export function authenticateService(service) {
@@ -15,16 +15,17 @@ export function authenticateService(service) {
                 // Open prepared url from class AuthURL
                 if (service === "spotify") window.location.replace(data.url);
                 else if (service === "youtube") window.location.replace(data.url[0]);
+                else throw new Error("Unsupported service type");
             });
         }
     })
-    .catch(error => console.log(error));
+    .catch(error => console.error(error));
 }
 
 // Get user's access token (needed for api calls)
 async function getUserAccessToken(service) {
     const response = await fetch(`get_user_access_token/${service}`)
-    .catch(error => console.log(error)); // errors strictly in promises
+    .catch(error => console.error(error)); // errors strictly in promises
 
     // Check server HTTP response (status code 200-299)
     if (!response.ok) throw new Error(`An error has occured: ${response.status}`);
@@ -41,8 +42,8 @@ async function getUserProfileId(service) {
     const response = await fetch(BASE_URL_SPOTIFY + 'me', {
         method: 'GET',
         headers: {'Authorization': 'Bearer ' + access_token['access_token']}
-    }).catch(error => console.log(error)); // errors strictly in promises
-
+    }).catch(error => console.error(error)); // errors strictly in promises
+    
     // Check server HTTP response (status code 200-299)
     if (!response.ok) throw new Error(`An error has occured: ${response.status}`);
 
@@ -57,15 +58,15 @@ async function getPlaylistItems(service, playlistId, endpoint) {
     const access_token = await getUserAccessToken(service); 
     
     // Step 2: retrieve playlist items
-    let response2;
+    let response;
     if (service === "spotify") {
-        response2 = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks` + endpoint, {
+        response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks` + endpoint, {
             method: 'GET',
             headers: {'Authorization': 'Bearer ' + access_token['access_token']},
-        }).catch(error => console.log(error)); // errors strictly in promises
+        }).catch(error => console.error(error)); // errors strictly in promises
     }
     else if (service === "youtube") {
-        response2 = await fetch(BASE_URL_YOUTUBE + 'playlistItems?' + new URLSearchParams({
+        response = await fetch(BASE_URL_YOUTUBE + 'playlistItems?' + new URLSearchParams({
             'part': 'snippet,contentDetails,status',
             'maxResults': 50,
             'playlistId': playlistId,
@@ -76,15 +77,15 @@ async function getPlaylistItems(service, playlistId, endpoint) {
                 'Authorization': 'Bearer ' + access_token['access_token'],
                 'Accept': 'application/json',
             },
-        }).catch(error => console.log(error)); // errors strictly in promises
-    }
+        }).catch(error => console.error(error)); // errors strictly in promises
+    } else throw new Error("Unsupported service type");
 
     // Check server HTTP response (status code 200-299)
-    if (!response2.ok) {
+    if (!response.ok) {
         throw new Error(`An error has occured: ${response.status}`);
     }
     
-    let tracks = await response2.json();
+    let tracks = await response.json();
 
     return tracks;
 }
@@ -113,7 +114,7 @@ export async function getEveryPlaylistItem(service, playlistId) {
              }
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
     else if (service === "youtube") {
@@ -138,12 +139,9 @@ export async function getEveryPlaylistItem(service, playlistId) {
              }
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    } 
-    else {
-        throw new Error("Unsupported service type");
-    }
+    } else throw new Error("Unsupported service type");
 
     return tracks;
 }
@@ -151,12 +149,20 @@ export async function getEveryPlaylistItem(service, playlistId) {
 // #####  #####
 export async function createPlaylist(service, title, description, isSetToPublic) {
     let createdPlaylist;
+    let access_token;
 
-    const access_token = await getUserAccessToken(service);
+    console.log(service);
+    console.log(title);
+    console.log(description);
+    console.log(isSetToPublic);
 
-    const userId = await getUserProfileId(service);
+    if (service === "youtube") access_token = await getUserAccessToken("spotify");
+    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
+    console.log(access_token);
+    
+    if (service === "youtube") { // create playlist on spotify
+        const userId = await getUserProfileId("spotify");
 
-    if (service === "spotify") {
         try {
             createdPlaylist = await fetch(BASE_URL_SPOTIFY + `users/${userId}/playlists`, {
                 method: 'POST',
@@ -169,23 +175,42 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                     'description': description,
                     'public': isSetToPublic
                 })
-            }).catch(error => console.log(error)); // errors strictly in promises
+            }).catch(error => console.error(error)); // errors strictly in promises
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
-    else if (service === "youtube") {
-        try {
+    else if (service === "spotify") { // create playlist on youtube
+        let privacyStatus = (isSetToPublic === true) ? "public" : "private";
+        console.log(privacyStatus);
 
+        try {
+            createdPlaylist = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
+                'part': 'snippet,status',
+                'key': access_token['api_key_yt']
+            }), {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + access_token['access_token'],
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                resource: JSON.stringify({
+                    'snippet': {
+                        'title': 'title',
+                        'description': 'description'
+                    },
+                    'status': {
+                        'privacyStatus': 'private'
+                    }
+                })
+            }).catch(error => console.error(error)); // errors strictly in promises
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    } 
-    else {
-        throw new Error("Unsupported service type");
-    }
+    } else throw new Error("Unsupported service type");
 
     createdPlaylist = await createdPlaylist.json();
 

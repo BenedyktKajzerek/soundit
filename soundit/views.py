@@ -26,6 +26,7 @@ from dotenv import load_dotenv
 import os
 
 # Disable OAuthlib's HTTPS verification when running locally.
+# *DO NOT* leave this option enabled in production.
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 load_dotenv()
