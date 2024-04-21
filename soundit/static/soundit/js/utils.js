@@ -148,8 +148,7 @@ export async function getEveryPlaylistItem(service, playlistId) {
 
 // #####  #####
 export async function createPlaylist(service, title, description, isSetToPublic) {
-    let createdPlaylist;
-    let access_token;
+    let createdPlaylist, access_token;
 
     console.log(service);
     console.log(title);
@@ -218,8 +217,73 @@ export async function createPlaylist(service, title, description, isSetToPublic)
 }
 
 // #####  #####
-export async function searchTracksForItsId(service) {
+export async function searchTracksForItsId(service, items) {
+    let tracks = [];
+    let track, endpoint, access_token;
+    let response;
 
+    if (service === "youtube") access_token = await getUserAccessToken("spotify");
+    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
+
+    console.log(items);
+
+    if (service === "youtube") { // search for spotify tracks
+        for (const item in items) {
+            track = items[item];
+
+            if (track['isChecked']) {
+                endpoint = `?q=${track['title']}&type=track&limit=1`;
+
+                try {
+                    response = await fetch(BASE_URL_SPOTIFY + 'search' + endpoint, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token['access_token'],
+                            'Content-Type': 'application/json'
+                        }
+                    }).catch(error => console.error(error)); // errors strictly in promises
+                
+                    let responseJson = await response.json();
+
+                    responseJson = responseJson['tracks']['items'][0]['id'];
+
+                    tracks.push(responseJson);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    }
+    if (service === "spotify") { // search for youtube tracks
+        for (const item in items) {
+            track = items[item];
+
+            if (track['isChecked']) {
+                endpoint = `?q=${track['title']}&type=track&limit=1`;
+
+                try {
+                    response = await fetch(BASE_URL_SPOTIFY + 'search' + endpoint, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token['access_token'],
+                            'Content-Type': 'application/json'
+                        }
+                    }).catch(error => console.error(error)); // errors strictly in promises
+                
+                    const responseJson = await response.json();
+
+                    tracks.push(responseJson)
+                }
+                catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    }
+
+    console.log(tracks);
+    return tracks;
 }
 
 // #####  #####

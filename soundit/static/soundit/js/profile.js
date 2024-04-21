@@ -273,15 +273,15 @@ async function showTrackListModal(service) {
     modalContainerTracks.classList.add('display-block');
 
     convertPlaylistBtn.addEventListener('click', () => {
-        convertPlaylist(service, title, description, isSetToPublic);
+        convertPlaylist(service, title, description, isSetToPublic, checkedTracks);
     });
 }
 
-async function convertPlaylist(service, title, description, isSetToPublic) {
+async function convertPlaylist(service, title, description, isSetToPublic, items) {
 
-    await createPlaylist(service, title, description, isSetToPublic);
+    // await createPlaylist(service, title, description, isSetToPublic);
     
-    // await searchTracksForItsId(service);
+    await searchTracksForItsId(service, items);
 
     // await addItemsToPlaylist(service);
 
