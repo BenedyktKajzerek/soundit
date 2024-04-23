@@ -150,14 +150,8 @@ export async function getEveryPlaylistItem(service, playlistId) {
 export async function createPlaylist(service, title, description, isSetToPublic) {
     let createdPlaylist, access_token;
 
-    console.log(service);
-    console.log(title);
-    console.log(description);
-    console.log(isSetToPublic);
-
     if (service === "youtube") access_token = await getUserAccessToken("spotify");
     else if (service === "spotify") access_token = await getUserAccessToken("youtube");
-    console.log(access_token);
     
     if (service === "youtube") { // create playlist on spotify
         const userId = await getUserProfileId("spotify");
@@ -182,7 +176,6 @@ export async function createPlaylist(service, title, description, isSetToPublic)
     }
     else if (service === "spotify") { // create playlist on youtube
         let privacyStatus = (isSetToPublic === true) ? "public" : "private";
-        console.log(privacyStatus);
 
         try {
             createdPlaylist = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
@@ -197,12 +190,12 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                 },
                 body: JSON.stringify({
                     "snippet": {
-                        "title": "title",
-                        "description": "description"
-                    },
-                    "status": {
-                        "privacyStatus": "private"
-                    }
+                        "title": title,
+                        "description": description,
+                    }, // status not working 
+                    // "status": {
+                    //     "privacyStatus": privacyStatus
+                    // },
                 })
             }).catch(error => console.error(error)); // errors strictly in promises
         }
