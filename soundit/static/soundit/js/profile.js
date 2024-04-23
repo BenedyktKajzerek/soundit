@@ -279,9 +279,9 @@ async function showTrackListModal(service) {
 
 async function convertPlaylist(service, title, description, isSetToPublic, items) {
 
-    // await createPlaylist(service, title, description, isSetToPublic);
+    await createPlaylist(service, title, description, isSetToPublic);
     
-    await searchTracksForItsId(service, items);
+    // await searchTracksForItsId(service, items);
 
     // await addItemsToPlaylist(service);
 

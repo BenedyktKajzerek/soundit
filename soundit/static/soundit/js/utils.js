@@ -186,7 +186,7 @@ export async function createPlaylist(service, title, description, isSetToPublic)
 
         try {
             createdPlaylist = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
-                'part': 'snippet,status',
+                'part': 'snippet',
                 'key': access_token['api_key_yt']
             }), {
                 method: 'POST',
@@ -195,13 +195,13 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                resource: JSON.stringify({
-                    'snippet': {
-                        'title': 'title',
-                        'description': 'description'
+                body: JSON.stringify({
+                    "snippet": {
+                        "title": "title",
+                        "description": "description"
                     },
-                    'status': {
-                        'privacyStatus': 'private'
+                    "status": {
+                        "privacyStatus": "private"
                     }
                 })
             }).catch(error => console.error(error)); // errors strictly in promises
@@ -219,23 +219,22 @@ export async function createPlaylist(service, title, description, isSetToPublic)
 // #####  #####
 export async function searchTracksForItsId(service, items) {
     let tracks = [];
-    let track, endpoint, access_token;
-    let response;
+    let track, response, access_token;
 
     if (service === "youtube") access_token = await getUserAccessToken("spotify");
     else if (service === "spotify") access_token = await getUserAccessToken("youtube");
-
-    console.log(items);
 
     if (service === "youtube") { // search for spotify tracks
         for (const item in items) {
             track = items[item];
 
             if (track['isChecked']) {
-                endpoint = `?q=${track['title']}&type=track&limit=1`;
-
                 try {
-                    response = await fetch(BASE_URL_SPOTIFY + 'search' + endpoint, {
+                    response = await fetch(BASE_URL_SPOTIFY + 'search?' + new URLSearchParams({
+                        'type': 'track',
+                        'limit': 1,
+                        'q': track['title'],
+                    }), {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer ' + access_token['access_token'],
@@ -260,14 +259,19 @@ export async function searchTracksForItsId(service, items) {
             track = items[item];
 
             if (track['isChecked']) {
-                endpoint = `?q=${track['title']}&type=track&limit=1`;
-
                 try {
-                    response = await fetch(BASE_URL_SPOTIFY + 'search' + endpoint, {
+                    response = await fetch(BASE_URL_YOUTUBE + 'search?' + new URLSearchParams({
+                        'part': 'snippet',
+                        'maxResults': 1,
+                        'type': 'video',
+                        'q': track['title'],
+                        'key': access_token['api_key_yt']
+                    }), {
                         method: 'GET',
                         headers: {
+                            'Content-Type': 'application/json',
                             'Authorization': 'Bearer ' + access_token['access_token'],
-                            'Content-Type': 'application/json'
+                            'Accept': 'application/json',
                         }
                     }).catch(error => console.error(error)); // errors strictly in promises
                 
