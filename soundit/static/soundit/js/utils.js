@@ -146,7 +146,7 @@ export async function getEveryPlaylistItem(service, playlistId) {
     return tracks;
 }
 
-// #####  #####
+// ##### create playlist #####
 export async function createPlaylist(service, title, description, isSetToPublic) {
     let createdPlaylist, access_token;
 
@@ -209,7 +209,7 @@ export async function createPlaylist(service, title, description, isSetToPublic)
     return createdPlaylist['id'];
 }
 
-// #####  #####
+// ##### get ID for every searched track/video #####
 export async function searchTracksForItsId(service, items) {
     let tracks = [];
     let track, response, access_token;
@@ -239,7 +239,7 @@ export async function searchTracksForItsId(service, items) {
 
                     responseJson = responseJson['tracks']['items'][0]['id'];
 
-                    tracks.push(responseJson);
+                    tracks.push('spotify:track:' + responseJson);
                 }
                 catch (error) {
                     console.error(error);
@@ -279,11 +279,83 @@ export async function searchTracksForItsId(service, items) {
         }
     }
 
-    console.log(tracks);
     return tracks;
 }
 
-// #####  #####
-export async function addItemsToPlaylist(service) {
-    
+// ##### add tracks/videos to playlist #####
+export async function addItemsToPlaylist(service, playlistId, tracks) {
+    let track, response, access_token;
+
+    if (service === "youtube") access_token = await getUserAccessToken("spotify");
+    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
+
+    if (service === "youtube") { // add tracks on spotify
+        // max size of items to add to playlist at once
+        let chunkSize = 100;
+        
+        if (tracks.length > 100) {
+            tracks = splitArray(tracks, chunkSize)
+        }
+
+        for (const item in tracks) {
+            track = tracks[item];
+
+            try {
+                response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks?`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token['access_token'],
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'uris': track
+                    })
+                }).catch(error => console.error(error)); // errors strictly in promises
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+    }
+    if (service === "spotify") { // add tracks on youtube
+        for (const item in tracks) {
+            track = tracks[item];
+            console.log(track);
+            console.log(track['items'][0]['id']['videoId']);
+            let trackId = track['items'][0]['id']['videoId'];
+
+            try {
+                response = await fetch(BASE_URL_YOUTUBE + 'playlistItems?' + new URLSearchParams({
+                    'part': 'snippet',
+                    'key': access_token['api_key_yt']
+                }), {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token['access_token'],
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'snippet': {
+                            'playlistId': playlistId,
+                            'resourceId': trackId,
+                        },
+                    })
+                }).catch(error => console.error(error)); // errors strictly in promises
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+    }
+}
+
+// divide array into smaller (100 items) arrays
+function splitArray(array, chunkSize) {
+    let result = [];
+    let len = array.length;
+    for (let i = 0; i < len; i += chunkSize) {
+        result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
 }

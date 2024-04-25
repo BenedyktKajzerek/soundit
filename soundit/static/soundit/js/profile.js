@@ -279,11 +279,11 @@ async function showTrackListModal(service) {
 
 async function convertPlaylist(service, title, description, isSetToPublic, items) {
 
-    await createPlaylist(service, title, description, isSetToPublic);
+    const playlistId = await createPlaylist(service, title, description, isSetToPublic);
     
-    // await searchTracksForItsId(service, items);
+    const searchedTracks = await searchTracksForItsId(service, items);
 
-    // await addItemsToPlaylist(service);
+    await addItemsToPlaylist(service, playlistId, searchedTracks);
 
     modalContainerTracks.classList.remove('display-block');
     modalContainerFailed.classList.add('display-block');
