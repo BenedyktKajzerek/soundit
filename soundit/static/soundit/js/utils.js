@@ -232,7 +232,6 @@ export async function searchTracksForItsId(service, items) {
                         'type': 'track',
                         'limit': 1,
                         'q': track['title'] + " " + track['artist'],
-                        // 'q': "fhos8w7345ysogvi35hs83gjh5vois",
                     }), {
                         method: 'GET',
                         headers: {
@@ -246,6 +245,7 @@ export async function searchTracksForItsId(service, items) {
                     
                     let responseJson = await response.json();
                     
+                    // create uris to add multiple track at once
                     responseJson = responseJson['tracks']['items'][0]['id'];
                     
                     tracks['searchedTracks'].push('spotify:track:' + responseJson);
@@ -293,7 +293,6 @@ export async function searchTracksForItsId(service, items) {
         }
     }
 
-    console.log(tracks);
     return tracks;
 }
 
@@ -364,6 +363,35 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
             }
         }
     }
+}
+
+// ##### delete multiple playlists at once #####
+export async function deletePlaylist() {
+    let access_token, playlistId, response;
+
+    if (service === "youtube") access_token = await getUserAccessToken("spotify");
+    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
+
+    // spotify
+    response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/followers`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + access_token['access_token'],
+        }
+    }).catch(error => console.error(error)); // errors strictly in promises
+
+    // youtube
+    response = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
+        'id': playlistId,
+        'key': access_token['api_key_yt']
+    }), {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + access_token['access_token'],
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }).catch(error => console.error(error)); // errors strictly in promises
 }
 
 // divide array into smaller (100 items) arrays

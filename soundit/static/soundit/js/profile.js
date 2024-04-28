@@ -48,6 +48,7 @@ const convertPlaylistBtn = document.querySelector('.modal-convert-btn');
 
 // Step 3: modal (failed tracks)
 const failedTracks = document.querySelector('#failed-tracks');
+const failedTrackElem = document.querySelector('.failed-track-container');
 const failedTracksContainer = document.querySelector('#failed-tracks-container');
 
 const modalDeleteBtn = document.querySelector('.modal-delete-btn');
@@ -290,17 +291,15 @@ async function convertPlaylist(service, title, description, isSetToPublic, items
 
     // await addItemsToPlaylist(service, playlistId, tracks['searchedTracks']);
 
-    const trackElem = document.querySelector('.failed-track-container');
-
     // show "template" track element back (incase selecting different playlist to convert)
-    trackElem.style.display = "";
+    failedTrackElem.style.display = "";
     // clear tracks from previously selected playlist
     failedTracksContainer.innerHTML = ""; 
 
     for (const item in tracks['failedTracks']) {
         let track = tracks['failedTracks'][item];
     
-        const clone = trackElem.cloneNode(true);
+        const clone = failedTrackElem.cloneNode(true);
         failedTracksContainer.appendChild(clone);
 
         clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
@@ -313,7 +312,7 @@ async function convertPlaylist(service, title, description, isSetToPublic, items
     failedTracks.innerHTML = tracks['failedTracks'].length;
 
     // hide "template" track element
-    trackElem.style.display = "none";
+    failedTrackElem.style.display = "none";
 
     modalContainerTracks.classList.remove('display-block');
     modalContainerFailed.classList.add('display-block');

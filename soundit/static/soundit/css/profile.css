@@ -704,7 +704,8 @@ body {
     overflow-y: scroll;
 }
 
-.track-container {
+.track-container,
+.failed-track-container {
     position: relative;
     width: 100%;
     display: flex;
@@ -713,7 +714,8 @@ body {
     padding-left: 18px;
 }
 
-.track-container:hover {
+.track-container:hover,
+.failed-track-container:hover {
     background-color: var(--bg-dark);
 }
 
@@ -721,11 +723,13 @@ body {
     min-width: 26px;
 }
 
-.track-container .playlist-title {
+.track-container .playlist-title,
+.failed-track-container .playlist-title {
     min-width: 550px;
 }
 
-.track-container img {
+.track-container img,
+.failed-track-container img {
     border-radius: 4px;
 }
 
