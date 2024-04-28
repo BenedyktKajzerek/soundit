@@ -46,9 +46,11 @@ const tracksSelected = document.querySelector('#tracks-selected');
 const tracksContainer = document.querySelector('#tracks-container');
 const convertPlaylistBtn = document.querySelector('.modal-convert-btn');
 
+// Step 3: modal (failed tracks)
+const failedTracks = document.querySelector('#failed-tracks');
+const failedTracksContainer = document.querySelector('#failed-tracks-container');
 
 const modalDeleteBtn = document.querySelector('.modal-delete-btn');
-
 const modalBtns = document.querySelectorAll('.modal-confirm-btn');
 
 let checkedPlaylists = [];
@@ -178,7 +180,7 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
     let count = 1;
 
     for (const item in items) {
-        let track, title, artist;
+        let track, title, artist, image;
 
         if (service === "spotify") {
             track = items[item]['track'];
@@ -195,20 +197,22 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
             clone.dataset.trackid = track['id'];
             clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
             clone.querySelector('.track-checkbox').dataset.id = parseInt(item) + 1;
-            clone.querySelector('#track-image').src = track['album']['images'][0]['url'];
             title = track['name'];
             artist = track['artists'][0]['name'];
+            image = track['album']['images'][0]['url'];
             clone.querySelector('#track-title').innerHTML = title;
             clone.querySelector('#track-artists').innerHTML = artist;
+            clone.querySelector('#track-image').src = image;
         } else if (service === "youtube") {
             clone.dataset.trackid = track['contentDetails']['videoId'];
             clone.querySelector('#track-number').innerHTML = count;
             clone.querySelector('.track-checkbox').dataset.id = count;
-            clone.querySelector('#track-image').src = track['snippet']['thumbnails']['default']['url'];
             title = track['snippet']['title'];
             artist = track['snippet']['videoOwnerChannelTitle'];
+            image = track['snippet']['thumbnails']['default']['url'];
             clone.querySelector('#track-title').innerHTML = title;
             clone.querySelector('#track-artists').innerHTML = artist;
+            clone.querySelector('#track-image').src = image;
             count++;
         }
 
@@ -217,6 +221,7 @@ function processTrack(service, items, trackElem, tracksContainer, checkedTracks)
         // add track to track list
         checkedTracks.push({
             'trackId': clone.dataset.trackid,
+            'image': image,
             'artist': artist,
             'title': title,
             'isChecked': true,
@@ -279,11 +284,36 @@ async function showTrackListModal(service) {
 
 async function convertPlaylist(service, title, description, isSetToPublic, items) {
 
-    const playlistId = await createPlaylist(service, title, description, isSetToPublic);
+    // const playlistId = await createPlaylist(service, title, description, isSetToPublic);
     
-    const searchedTracks = await searchTracksForItsId(service, items);
+    const tracks = await searchTracksForItsId(service, items);
 
-    await addItemsToPlaylist(service, playlistId, searchedTracks);
+    // await addItemsToPlaylist(service, playlistId, tracks['searchedTracks']);
+
+    const trackElem = document.querySelector('.failed-track-container');
+
+    // show "template" track element back (incase selecting different playlist to convert)
+    trackElem.style.display = "";
+    // clear tracks from previously selected playlist
+    failedTracksContainer.innerHTML = ""; 
+
+    for (const item in tracks['failedTracks']) {
+        let track = tracks['failedTracks'][item];
+    
+        const clone = trackElem.cloneNode(true);
+        failedTracksContainer.appendChild(clone);
+
+        clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
+        clone.querySelector('#track-image').src = track['image'];
+        clone.querySelector('#track-title').innerHTML = track['title'];
+        clone.querySelector('#track-artists').innerHTML = track['artist'];
+    }
+
+    // update total tracks
+    failedTracks.innerHTML = tracks['failedTracks'].length;
+
+    // hide "template" track element
+    trackElem.style.display = "none";
 
     modalContainerTracks.classList.remove('display-block');
     modalContainerFailed.classList.add('display-block');

@@ -211,8 +211,13 @@ export async function createPlaylist(service, title, description, isSetToPublic)
 
 // ##### get ID for every searched track/video #####
 export async function searchTracksForItsId(service, items) {
-    let tracks = [];
+    let tracks = {
+        'searchedTracks': [],
+        'failedTracks': [],
+    };
     let track, response, access_token;
+
+    console.log(items);
 
     if (service === "youtube") access_token = await getUserAccessToken("spotify");
     else if (service === "spotify") access_token = await getUserAccessToken("youtube");
@@ -226,23 +231,28 @@ export async function searchTracksForItsId(service, items) {
                     response = await fetch(BASE_URL_SPOTIFY + 'search?' + new URLSearchParams({
                         'type': 'track',
                         'limit': 1,
-                        'q': track['title'],
+                        'q': track['title'] + " " + track['artist'],
+                        // 'q': "fhos8w7345ysogvi35hs83gjh5vois",
                     }), {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer ' + access_token['access_token'],
                             'Content-Type': 'application/json'
                         }
-                    }).catch(error => console.error(error)); // errors strictly in promises
-                
+                    }).catch(error => { // errors strictly in promises
+                        console.error(error);
+                        tracks['failedTracks'].push(track);
+                    }); 
+                    
                     let responseJson = await response.json();
-
+                    
                     responseJson = responseJson['tracks']['items'][0]['id'];
-
-                    tracks.push('spotify:track:' + responseJson);
+                    
+                    tracks['searchedTracks'].push('spotify:track:' + responseJson);
                 }
                 catch (error) {
                     console.error(error);
+                    tracks['failedTracks'].push(track);
                 }
             }
         }
@@ -257,7 +267,7 @@ export async function searchTracksForItsId(service, items) {
                         'part': 'snippet',
                         'maxResults': 1,
                         'type': 'video',
-                        'q': track['title'],
+                        'q': track['title'] + " " + track['artist'],
                         'key': access_token['api_key_yt']
                     }), {
                         method: 'GET',
@@ -266,19 +276,24 @@ export async function searchTracksForItsId(service, items) {
                             'Authorization': 'Bearer ' + access_token['access_token'],
                             'Accept': 'application/json',
                         }
-                    }).catch(error => console.error(error)); // errors strictly in promises
+                    }).catch(error => { // errors strictly in promises
+                        console.error(error);
+                        tracks['failedTracks'].push(track);
+                    }); 
                 
                     const responseJson = await response.json();
 
-                    tracks.push(responseJson)
+                    tracks['searchedTracks'].push(responseJson);
                 }
                 catch (error) {
                     console.error(error);
+                    tracks['failedTracks'].push(track);
                 }
             }
         }
     }
 
+    console.log(tracks);
     return tracks;
 }
 
@@ -320,8 +335,6 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
     if (service === "spotify") { // add tracks on youtube
         for (const item in tracks) {
             track = tracks[item];
-            console.log(track);
-            console.log(track['items'][0]['id']['videoId']);
             let trackId = track['items'][0]['id']['videoId'];
 
             try {
@@ -338,7 +351,10 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
                     body: JSON.stringify({
                         'snippet': {
                             'playlistId': playlistId,
-                            'resourceId': trackId,
+                            'resourceId': {
+                                'kind': 'youtube#video',
+                                'videoId': trackId
+                            }
                         },
                     })
                 }).catch(error => console.error(error)); // errors strictly in promises
