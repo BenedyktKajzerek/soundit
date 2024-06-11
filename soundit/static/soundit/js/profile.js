@@ -3,7 +3,8 @@ import {
     getEveryPlaylistItem, 
     createPlaylist,
     searchTracksForItsId,
-    addItemsToPlaylist 
+    addItemsToPlaylist,
+    // deletePlaylistAPI
 } from "/static/soundit/js/utils.js";
     
 // services
@@ -82,13 +83,9 @@ searchPlaylist.addEventListener('input', function() {
 
     playlists.forEach(function(playlist) {
         const playlistName = playlist.getAttribute('data-playlistname').toLowerCase();
+        const shouldDisplay = playlistName.includes(searchValue); // Determine visibility
         
-        if (playlistName.includes(searchValue)) {
-            playlist.style.display = 'flex';
-        }
-        else {
-            playlist.style.display = 'none';
-        }
+        playlist.style.display = shouldDisplay ? 'flex' : 'none'; // Set display property
     });
 });
 
@@ -97,17 +94,23 @@ searchPlaylist.addEventListener('input', function() {
 playlistsCheckboxes.forEach(function(checkbox) {
     // style checkboxes and update checked list
     checkbox.addEventListener('change', function() {
+        
+        // Cache parent element
+        const parent = this.parentElement;
+        // Cache previous element sibling
+        const previousSibling = parent.previousElementSibling;
+
         if (this.checked) {
             // style checkbox (select-div and num-add)
-            this.parentElement.style.display = 'block';
-            this.parentElement.previousElementSibling.style.display = "none";
+            parent.style.display = 'block';
+            previousSibling.style.display = "none";
         
             // push selected playlist 
             checkedPlaylists.push(this);
         }
         else {
-            this.parentElement.style.display = '';
-            this.parentElement.previousElementSibling.style.display = "";
+            parent.style.display = '';
+            previousSibling.style.display = "";
         
             let index = checkedPlaylists.indexOf(this);
             if (index !== -1) {
@@ -120,30 +123,20 @@ playlistsCheckboxes.forEach(function(checkbox) {
 
 // select all playlists at once
 selectAllBtn.addEventListener('change', function() {
-    if (this.checked) {
-        playlistsCheckboxes.forEach(function(checkbox) {
-            checkbox.checked = true;
-            checkbox.parentElement.style.display = 'block';
-            checkbox.parentElement.previousElementSibling.style.display = "none";
+    const isChecked = this.checked;
+    playlistsCheckboxes.forEach(function(checkbox) {
+        checkbox.checked = isChecked;
+        checkbox.parentElement.style.display = isChecked ? 'block' : '';
+        checkbox.parentElement.previousElementSibling.style.display = isChecked ? 'none' : '';
         
-            // add only if not already in list
-            if (!checkedPlaylists.includes(checkbox)) {
-                checkedPlaylists.push(checkbox);
-            }
-        });
-    }
-    else {
-        playlistsCheckboxes.forEach(function(checkbox) {
-            checkbox.checked = false;
-            checkbox.parentElement.style.display = '';
-            checkbox.parentElement.previousElementSibling.style.display = "";
-        
-            let index = checkedPlaylists.indexOf(checkbox);
-            if (index !== -1) {
-                checkedPlaylists.splice(index, 1);
-            }
-        });        
-    }
+        const index = checkedPlaylists.indexOf(checkbox);
+        // add only if not already in list
+        if (isChecked && index === -1) {
+            checkedPlaylists.push(checkbox);
+        } else if (!isChecked && index !== -1) {
+            checkedPlaylists.splice(index, 1);
+        }
+    });
     checkSelectedCheckboxes();
 });
 
@@ -285,11 +278,11 @@ async function showTrackListModal(service) {
 
 async function convertPlaylist(service, title, description, isSetToPublic, items) {
 
-    // const playlistId = await createPlaylist(service, title, description, isSetToPublic);
+    const playlistId = await createPlaylist(service, title, description, isSetToPublic);
     
     const tracks = await searchTracksForItsId(service, items);
 
-    // await addItemsToPlaylist(service, playlistId, tracks['searchedTracks']);
+    await addItemsToPlaylist(service, playlistId, tracks['searchedTracks']);
 
     // show "template" track element back (incase selecting different playlist to convert)
     failedTrackElem.style.display = "";

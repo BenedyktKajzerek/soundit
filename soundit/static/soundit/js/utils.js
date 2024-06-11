@@ -217,8 +217,6 @@ export async function searchTracksForItsId(service, items) {
     };
     let track, response, access_token;
 
-    console.log(items);
-
     if (service === "youtube") access_token = await getUserAccessToken("spotify");
     else if (service === "spotify") access_token = await getUserAccessToken("youtube");
 
@@ -298,6 +296,7 @@ export async function searchTracksForItsId(service, items) {
 
 // ##### add tracks/videos to playlist #####
 export async function addItemsToPlaylist(service, playlistId, tracks) {
+
     let track, response, access_token;
 
     if (service === "youtube") access_token = await getUserAccessToken("spotify");
@@ -306,25 +305,24 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
     if (service === "youtube") { // add tracks on spotify
         // max size of items to add to playlist at once
         let chunkSize = 100;
-        
-        if (tracks.length > 100) {
-            tracks = splitArray(tracks, chunkSize)
-        }
+        let items;
 
-        for (const item in tracks) {
-            track = tracks[item];
-
+        for (let i = 0, l = tracks.length; i < l; i += chunkSize) {
+            items = tracks.slice(i, i + chunkSize);
+            
             try {
-                response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks?`, {
+                response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks`, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + access_token['access_token'],
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        'uris': track
+                        'uris': items
                     })
                 }).catch(error => console.error(error)); // errors strictly in promises
+                console.log(response);
             }
             catch (error) {
                 console.error(error);
@@ -366,7 +364,7 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
 }
 
 // ##### delete multiple playlists at once #####
-export async function deletePlaylist() {
+export async function deletePlaylistAPI() {
     let access_token, playlistId, response;
 
     if (service === "youtube") access_token = await getUserAccessToken("spotify");
