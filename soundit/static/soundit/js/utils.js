@@ -364,40 +364,29 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
 }
 
 // ##### delete multiple playlists at once #####
-export async function deletePlaylistAPI() {
-    let access_token, playlistId, response;
+export async function deletePlaylistAPI(service, playlistId) {
+    let response;
+    let access_token = await getUserAccessToken(service);
 
-    if (service === "youtube") access_token = await getUserAccessToken("spotify");
-    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
-
-    // spotify
-    response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/followers`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': 'Bearer ' + access_token['access_token'],
-        }
-    }).catch(error => console.error(error)); // errors strictly in promises
-
-    // youtube
-    response = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
-        'id': playlistId,
-        'key': access_token['api_key_yt']
-    }), {
-        method: 'DELETE',
-        headers: {
-            'Authorization': 'Bearer ' + access_token['access_token'],
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    }).catch(error => console.error(error)); // errors strictly in promises
-}
-
-// divide array into smaller (100 items) arrays
-function splitArray(array, chunkSize) {
-    let result = [];
-    let len = array.length;
-    for (let i = 0; i < len; i += chunkSize) {
-        result.push(array.slice(i, i + chunkSize));
+    if (service === "spotify") {
+        response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/followers`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + access_token['access_token'],
+            }
+        }).catch(error => console.error(error)); // errors strictly in promises
     }
-    return result;
+    else if (service === "youtube") {
+        response = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
+            'id': playlistId,
+            'key': access_token['api_key_yt']
+        }), {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + access_token['access_token'],
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).catch(error => console.error(error)); // errors strictly in promises
+    }
 }

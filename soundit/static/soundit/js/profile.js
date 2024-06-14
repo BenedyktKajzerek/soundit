@@ -4,7 +4,7 @@ import {
     createPlaylist,
     searchTracksForItsId,
     addItemsToPlaylist,
-    // deletePlaylistAPI
+    deletePlaylistAPI
 } from "/static/soundit/js/utils.js";
     
 // services
@@ -105,14 +105,14 @@ playlistsCheckboxes.forEach(function(checkbox) {
             parent.style.display = 'block';
             previousSibling.style.display = "none";
         
-            // push selected playlist 
-            checkedPlaylists.push(this);
+            // push selected playlist (not playlist checkbox)
+            checkedPlaylists.push(this.parentElement.parentElement.parentElement);
         }
         else {
             parent.style.display = '';
             previousSibling.style.display = "";
         
-            let index = checkedPlaylists.indexOf(this);
+            let index = checkedPlaylists.indexOf(this.parentElement.parentElement.parentElement);
             if (index !== -1) {
                 checkedPlaylists.splice(index, 1);
             }
@@ -129,10 +129,11 @@ selectAllBtn.addEventListener('change', function() {
         checkbox.parentElement.style.display = isChecked ? 'block' : '';
         checkbox.parentElement.previousElementSibling.style.display = isChecked ? 'none' : '';
         
-        const index = checkedPlaylists.indexOf(checkbox);
+        // parentElement to select playlist div (not playlist checkbox)
+        const index = checkedPlaylists.indexOf(checkbox.parentElement.parentElement.parentElement);
         // add only if not already in list
         if (isChecked && index === -1) {
-            checkedPlaylists.push(checkbox);
+            checkedPlaylists.push(checkbox.parentElement.parentElement.parentElement);
         } else if (!isChecked && index !== -1) {
             checkedPlaylists.splice(index, 1);
         }
@@ -229,7 +230,7 @@ async function showTrackListModal(service) {
     const description = document.querySelector('#description').value;
     const isSetToPublic = document.querySelector('#privacy-status').checked;
 
-    const playlistId = checkedPlaylists[0].parentElement.parentElement.parentElement.dataset.playlistid;
+    const playlistId = checkedPlaylists[0].dataset.playlistid;
 
     const items = await getEveryPlaylistItem(service, playlistId);
 
@@ -311,8 +312,19 @@ async function convertPlaylist(service, title, description, isSetToPublic, items
     modalContainerFailed.classList.add('display-block');
 }
 
-function deletePlaylist() {
-    console.log("DELETE PLAYLIST");
+function deletePlaylist(playlistsToDelete) {
+    playlistsToDelete.forEach(playlist => {
+        // get playlist data
+        let service = playlist.dataset.service;
+        let playlistId = playlist.dataset.playlistid;
+
+        // delete playlists
+        deletePlaylistAPI(service, playlistId);
+
+        // hide modal
+        modal.classList.remove('open-modal');
+        modalContainerDelete.classList.remove('display-block');
+    });
 }
 
 // ##### EventListeners #####
@@ -342,7 +354,7 @@ try {
 
 // open convert modal
 convertBtn.addEventListener('click', () => {
-    const playlist = checkedPlaylists[0].parentElement.parentElement.parentElement;
+    const playlist = checkedPlaylists[0];
 
     // use title and description from current playlist
     titleInput.value = playlist.dataset.playlistname;
@@ -393,5 +405,5 @@ modalBtns.forEach(function(btn) {
 
 // delete playlist
 modalDeleteBtn.addEventListener('click', () => {
-    deletePlaylist();
+    deletePlaylist(checkedPlaylists);
 });
