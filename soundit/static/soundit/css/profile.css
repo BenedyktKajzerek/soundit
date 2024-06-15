@@ -543,12 +543,18 @@ body {
     display: none;
 }
 
+.modal-container-settings {
+    display: none;
+}
+
 .open-modal {
     visibility: visible;
     z-index: 999;
 }
 
-.modal-container-convert {
+.modal-container-convert,
+.modal-container-settings,
+.modal-container-delete {
     position: relative;
     height: 700px;
     width: 700px;
@@ -557,10 +563,27 @@ body {
     background-color: var(--bg);
 }
 
-.modal-container-convert h3 {
+.modal-container-convert h3,
+.modal-container-settings h3,
+.modal-container-delete h3 {
     font-size: 24px;
     text-align: center;
     margin: 24px 0 32px;
+}
+
+.modal-container-delete {
+    height: 250px;
+    width: 350px;
+}
+
+.modal-container-delete h3 {
+    color: var(--red2);
+}
+
+.modal-container-delete p {
+    text-align: center;
+    padding: 0 32px;
+    margin-bottom: 56px;
 }
 
 .convert-content {
@@ -610,7 +633,7 @@ body {
     resize: vertical;
     height: 92px;
     min-height: 50px;
-    max-height: 276px;
+    max-height: 182px;
     overflow-y: auto;
 }
 
@@ -648,7 +671,8 @@ body {
 .modal-next-btn,
 .modal-convert-btn,
 .modal-failed-btn,
-.modal-delete-btn {
+.modal-delete-btn,
+.modal-logout-btn {
     width: 100%;
     border: none;
     outline: none;
@@ -665,8 +689,14 @@ body {
     background-color: var(--second);
 }
 
-.modal-delete-btn {
+.modal-delete-btn,
+.modal-logout-btn {
     background-color: var(--red2);
+}
+
+.modal-logout-btn {
+    text-align: center;
+    text-decoration: none;
 }
 
 .modal-next-btn:hover,
@@ -746,28 +776,6 @@ body {
     position: absolute;
     top: 8px;
     right: 0;
-}
-
-.modal-container-delete {
-    position: relative;
-    height: 250px;
-    width: 350px;
-    padding: 16px;
-    border-radius: 16px;
-    background-color: var(--bg);
-}
-
-.modal-container-delete h3 {
-    font-size: 24px;
-    text-align: center;
-    margin: 24px 0 32px;
-    color: var(--red2);
-}
-
-.modal-container-delete p {
-    text-align: center;
-    padding: 0 32px;
-    margin-bottom: 56px;
 }
 
 .modal-container {

@@ -459,7 +459,7 @@
             </div>
 
             <!-- modal delete playlist -->
-            <div class="modal-container-delete">
+            <div class="modal-container-delete" id="modal-container-delete">
                 <div class="modal-container">
 
                     <button class="modal-close-btn">
@@ -469,24 +469,29 @@
                     <h3>ARE YOU SURE</h3>
                     <p>Confirm that you want to delete selected playlists from your library.</p>
                     
-                    <button class="modal-delete-btn">
+                    <button class="modal-delete-btn" id="modal-delete-btn">
                         DELETE
                     </button>
 
                 </div>
             </div>
+
+            <div class="modal-container-settings" id="modal-container-settings">
+                <div class="modal-container">
+
+                    <button class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <h3>SETTINGS</h3>
+                    
+                    <a href="{% url 'logout' %}" class="modal-logout-btn">
+                        LOG OUT
+                    </a>
+                </div>
+            </div>
                 
         </div>
-
-        <!-- modal settings
-        <div class="modal-container-settings">
-    
-            <h3>Settings</h3>
-            <button class="modal-close-btn">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-        </div> -->
 
     </div>
 

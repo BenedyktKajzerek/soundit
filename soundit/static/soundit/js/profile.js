@@ -30,10 +30,12 @@ const playlistsCheckboxes = document.querySelectorAll('.playlist-checkbox');
 // modal
 const modal = document.querySelector('.modal-overlay');
 const closeBtns = document.querySelectorAll('.modal-close-btn');
+const modalBtns = document.querySelectorAll('.modal-confirm-btn');
 const modalContainerConvert = document.querySelector('#modal-container-convert');
 const modalContainerTracks = document.querySelector('#modal-container-tracks');
 const modalContainerFailed = document.querySelector('#modal-container-failed');
-const modalContainerDelete = document.querySelector('.modal-container-delete');
+const modalContainerDelete = document.querySelector('#modal-container-delete');
+const modalContainerSettings = document.querySelector('#modal-container-settings');
 
 // Step 1: modal (convert)
 const titleInput = document.querySelector('#title');
@@ -52,8 +54,8 @@ const failedTracks = document.querySelector('#failed-tracks');
 const failedTrackElem = document.querySelector('.failed-track-container');
 const failedTracksContainer = document.querySelector('#failed-tracks-container');
 
-const modalDeleteBtn = document.querySelector('.modal-delete-btn');
-const modalBtns = document.querySelectorAll('.modal-confirm-btn');
+// delete modal
+const modalDeleteBtn = document.querySelector('#modal-delete-btn');
 
 let checkedPlaylists = [];
 let checkedTracks = [];
@@ -69,11 +71,15 @@ window.addEventListener('click', function(e) {
     }
 });
 
-// ##### settings #####
-
-settingsBtn.addEventListener('click', () => {
-    console.log("settings");
-});
+// logout
+function logout() {
+    fetch('http://127.0.0.1:8000/logout')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+})
+    .catch(error => console.error(error));
+}
 
 // ##### search playlist #####
 
@@ -348,9 +354,10 @@ try {
 } catch (err) { /* ignore err */ }
 
 // open modal with settings
-// settingsBtn.addEventListener('click', () => {
-//     modal.classList.add('open-modal');
-// })
+settingsBtn.addEventListener('click', () => {
+    modal.classList.add('open-modal');
+    modalContainerSettings.classList.add('display-block');
+})
 
 // open convert modal
 convertBtn.addEventListener('click', () => {
