@@ -176,7 +176,7 @@
 /* ===== Section 4 (available convertions) ===== */
 
 .section-4 {
-    height: 1000px;
+    height: 800px;
     background-color: var(--white);
 }
 
@@ -186,6 +186,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-top: 200px;
 }
 
 .services-info {
@@ -251,18 +252,7 @@
     height: 480px;
 }
 
-.service-link {
-    display: block;
-    height: 80px;
-    color: var(--black);
-    font-size: 20px;
-    font-weight: 600;
-    text-decoration: none;
-    border-bottom: 1px solid rgb(240, 240, 240);
-    transition: height .1s ease, padding .1s ease;
-}
-
-.service-link:last-of-type {
+.service:last-of-type {
     border-bottom: none;
 }
 
@@ -271,20 +261,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 80px;
+    color: var(--black);
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgb(240, 240, 240);
+    transition: height .1s ease, padding .1s ease;
+    cursor: default;
 }
 
-.service-link:hover {
+.service:hover {
     height: 100px;
     padding: 0 12px;
     background-color: rgb(250, 250, 250);
 }
 
 
-.service div {
-    width: 340px;
+.service > div {
+    width: 500px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+}
+
+.service span {
+    margin-left: 24px;
 }
 
 .mini-logo {
@@ -304,6 +305,7 @@
     background-color: var(--white);
     width: 130px;
     transition: .2s ease;
+    text-decoration: none;
 }
 
 .service-btn:hover {
@@ -572,8 +574,8 @@
     }
     
     /* === Section 4 (available convertions) === */
-    .service div {
-        width: 300px;
+    .service > div {
+        min-width: 300px;
     }
     
     .service span {

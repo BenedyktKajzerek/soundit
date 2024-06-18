@@ -43,12 +43,24 @@ body {
 }
 
 .form-wrapper {
+    position: relative;
     width: 420px;
     height: 600px;
     display: flex;
     flex-direction: column;
     border-radius: 12px;
     background-color: var(--bg);
+}
+
+.home-logo {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+}
+
+.home-logo img {
+    width: 32px;
+    height: 32px;
 }
 
 h2 {

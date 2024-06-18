@@ -103,7 +103,7 @@
         <div class="container">
 
             <div class="services-info">
-                <h2><span class="amount">1 </span>Available Conversions</h2>
+                <h2><span class="amount">2 </span>Available Conversions</h2>
                 
                 <p>Search for available music services on Soundit.</p>
             </div>
@@ -116,18 +116,27 @@
             </label>
             
             <div class="services-div">
-                <a href="#" class="service-link">
-                    <div class="service">
+                <div class="service" data-servicename="spotifyyoutube">
+                    <div>
                         <div>
                             <img class="mini-logo" src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="Spotify logo">
-                            <img class="mini-logo" src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="Youtube logo">
-                            <span>Spotify to YouTube</span>
+                            <img class="mini-logo" src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="YouTube logo">
                         </div>
-                        <button class="service-btn">Convert</button>
+                        <span>Spotify to YouTube</span>
                     </div>
-                </a>
-            </div>
+                        <a href="{% url 'login' %}" class="service-btn">Convert</a>
+                </div>
             
+                <div class="service" data-servicename="youtubespotify">
+                    <div>
+                        <div>
+                            <img class="mini-logo" src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="YouTube logo">
+                            <img class="mini-logo" src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="Spotify logo">
+                        </div>
+                        <span>YouTube to Spotify</span>
+                    </div>
+                        <a href="{% url 'login' %}" class="service-btn">Convert</a>
+                </div>
         </div>
     </section>
     

@@ -70,17 +70,6 @@ window.addEventListener('click', function(e) {
         nav.classList.remove('display-nav');
     }
 });
-
-// logout
-function logout() {
-    fetch('http://127.0.0.1:8000/logout')
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-})
-    .catch(error => console.error(error));
-}
-
 // ##### search playlist #####
 
 // search playlists by title
