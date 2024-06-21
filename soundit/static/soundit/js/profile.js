@@ -33,6 +33,7 @@ const closeBtns = document.querySelectorAll('.modal-close-btn');
 const modalBtns = document.querySelectorAll('.modal-confirm-btn');
 const modalContainerConvert = document.querySelector('#modal-container-convert');
 const modalContainerTracks = document.querySelector('#modal-container-tracks');
+const modalContainerProgress = document.querySelector('#modal-container-progress');
 const modalContainerFailed = document.querySelector('#modal-container-failed');
 const modalContainerDelete = document.querySelector('#modal-container-delete');
 const modalContainerSettings = document.querySelector('#modal-container-settings');
@@ -273,37 +274,42 @@ async function showTrackListModal(service) {
 }
 
 async function convertPlaylist(service, title, description, isSetToPublic, items) {
-
+    
+    // show process modal
+    modalContainerTracks.classList.remove('display-block');
+    modalContainerProgress.classList.add('display-block');
+    
     const playlistId = await createPlaylist(service, title, description, isSetToPublic);
     
     const tracks = await searchTracksForItsId(service, items);
-
+    
     await addItemsToPlaylist(service, playlistId, tracks['searchedTracks']);
-
+    
     // show "template" track element back (incase selecting different playlist to convert)
     failedTrackElem.style.display = "";
     // clear tracks from previously selected playlist
     failedTracksContainer.innerHTML = ""; 
-
+    
     for (const item in tracks['failedTracks']) {
         let track = tracks['failedTracks'][item];
-    
+        
         const clone = failedTrackElem.cloneNode(true);
         failedTracksContainer.appendChild(clone);
-
+        
         clone.querySelector('#track-number').innerHTML = parseInt(item) + 1;
         clone.querySelector('#track-image').src = track['image'];
         clone.querySelector('#track-title').innerHTML = track['title'];
         clone.querySelector('#track-artists').innerHTML = track['artist'];
     }
-
+    
     // update total tracks
     failedTracks.innerHTML = tracks['failedTracks'].length;
-
+    
     // hide "template" track element
     failedTrackElem.style.display = "none";
-
-    modalContainerTracks.classList.remove('display-block');
+    
+    // show failed tracks modal
+    modalContainerProgress.classList.remove('display-block');
     modalContainerFailed.classList.add('display-block');
 }
 

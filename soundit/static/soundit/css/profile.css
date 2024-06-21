@@ -549,6 +549,10 @@ body {
     display: none;
 }
 
+.modal-container-progress {
+    display: none;
+}
+
 .modal-container-delete {
     display: none;
 }
@@ -563,7 +567,9 @@ body {
 }
 
 .modal-container-convert,
+.modal-container-progress,
 .modal-container-settings,
+.modal-container-failed,
 .modal-container-delete {
     position: relative;
     height: 700px;
@@ -574,11 +580,51 @@ body {
 }
 
 .modal-container-convert h3,
+.modal-container-progress h3,
 .modal-container-settings h3,
 .modal-container-delete h3 {
     font-size: 24px;
     text-align: center;
     margin: 24px 0 32px;
+}
+
+.modal-container-progress {
+    height: 300px
+}
+
+.progress-logo-div {
+    width: 280px;
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+}
+
+.progress-divider {
+    height: 12px;
+    width: 160px;
+    background-color: var(--primary);
+}
+
+.progress-logo-div img {
+    width: 52px;
+    height: 52px;
+}
+
+.modal-container-progress h4 {
+    font-size: 18px;
+    margin: 24px 0 12px;
+}
+
+.progress {
+    font-weight: 700;
+    color: var(--grey);
+    padding: 8px 16px 6px;
+    border: 1px solid var(--dark-grey);
+    border-radius: 10px;
+}
+
+.modal-container-progress p {
+    margin-top: 12px;
 }
 
 .modal-container-delete {
@@ -757,6 +803,10 @@ body {
     align-items: center;
     min-height: 60px;
     padding-left: 18px;
+}
+
+#failed-tracks-container {
+    height: 520px;
 }
 
 .track-container:hover,
