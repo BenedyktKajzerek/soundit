@@ -274,7 +274,8 @@ async function showTrackListModal(service) {
 }
 
 async function convertPlaylist(service, title, description, isSetToPublic, items) {
-    
+    updateProgressModal(service);
+
     // show process modal
     modalContainerTracks.classList.remove('display-block');
     modalContainerProgress.classList.add('display-block');
@@ -311,6 +312,23 @@ async function convertPlaylist(service, title, description, isSetToPublic, items
     // show failed tracks modal
     modalContainerProgress.classList.remove('display-block');
     modalContainerFailed.classList.add('display-block');
+}
+
+function updateProgressModal(service) {
+    const progressFromSpotify = document.querySelector('#progress-from-spotify');
+    const progressFromYoutube = document.querySelector('#progress-from-youtube');
+    const progress = document.querySelector('#progress');
+
+    if (service === "youtube") {
+        progressFromSpotify.classList.remove('display-flex');
+        progressFromYoutube.classList.add('display-flex');
+        progress.style.display = "none";
+    }
+    if (service === "spotify") {
+        progressFromSpotify.classList.add('display-flex');
+        progressFromYoutube.classList.remove('display-flex');
+        progress.style.display = "";
+    }
 }
 
 function deletePlaylist(playlistsToDelete) {
@@ -401,6 +419,7 @@ modalBtns.forEach(function(btn) {
         } else if (btn.value === "close") {
             modal.classList.remove('open-modal');
             modalContainerFailed.classList.remove('display-block');
+            location.reload();
         }
     });
 });

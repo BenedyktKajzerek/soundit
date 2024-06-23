@@ -296,27 +296,14 @@ export async function searchTracksForItsId(service, items) {
 
 // ##### add tracks/videos to playlist #####
 export async function addItemsToPlaylist(service, playlistId, tracks) {
-
+    
     // convertion progress
     const progressNominator = document.querySelector('#progress-nominator');
     const progressDenominator = document.querySelector('#progress-denominator');
     const progressPercentage = document.querySelector('#progress-percentage');
-
-    const progressFrom = document.querySelector('#progress-from');
-    const progressTo = document.querySelector('#progress-to');
-
-    let track, response, access_token;
-
-    if (service === "youtube") { 
-        access_token = await getUserAccessToken("spotify");
     
-        // from service to service (on progress modal)
-        progressFrom.src = "{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}";
-        progressFrom.alt = "YouTube logo";
-        
-        progressTo.src = "{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}";
-        progressTo.alt = "Spotify logo";
-    }
+    let track, response, access_token;
+    if (service === "youtube") access_token = await getUserAccessToken("spotify");
     else if (service === "spotify") access_token = await getUserAccessToken("youtube");
 
     progressDenominator.innerHTML = tracks.length;
@@ -347,9 +334,11 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
                 console.error(error);
             }
 
+            // on bigger playlists causing bugs when transfering
+            // (if app is open during transfer) 
             // update convertion progress
-            progressNominator.innerHTML = parseInt(items.length) + 1;
-            progressPercentage.innerHTML = Math.round(100 * (parseInt(items.length) + 1) / l);
+            // progressNominator.innerHTML = items.length;
+            // progressPercentage.innerHTML = Math.round(100 * items.length / tracks.length);
         }
     }
     if (service === "spotify") { // add tracks on youtube

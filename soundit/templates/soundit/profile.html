@@ -355,6 +355,8 @@
                             </label>
                         </div>
 
+                        <div class="convert-warning">To ensure successful transfer, it is recommended to close the application to which you are uploading the playlist during conversion.</div>
+
                         <div class="convert-info">
                             Transfer from
                             </br>
@@ -428,15 +430,21 @@
                     
                     <h3>CONVERTION PROGRESS</h3>
                     
-                    <div class="progress-logo-div">
-                        <img id="progress-from" src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="Spotify logo">
+                    <div id="progress-from-spotify" class="progress-logo-div">
+                        <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="Spotify logo">
                         <div class="progress-divider"></div>
-                        <img id="progress-to" src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="YouTube logo">
+                        <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="YouTube logo">
+                    </div>
+
+                    <div id="progress-from-youtube" class="progress-logo-div">
+                        <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="YouTube logo">
+                        <div class="progress-divider"></div>
+                        <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="Spotify logo">
                     </div>
 
                     <h4>Converting...</h4>
                     
-                    <div class="progress">
+                    <div id="progress" class="progress">
                         <span id="progress-nominator">0</span>/<span id="progress-denominator">0</span> &bull; <span id="progress-percentage">0</span>%
                     </div>
 
@@ -448,10 +456,6 @@
             <!-- modal convert playlist (step 3) -->
             <div class="modal-container-convert" id="modal-container-failed">
                 <div class="modal-container">
-                    
-                    <button class="modal-close-btn">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
 
                     <h3>FAILED TO TRANSFER</h3>
 
