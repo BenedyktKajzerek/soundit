@@ -94,69 +94,51 @@ async function getPlaylistItems(service, playlistId, endpoint) {
 export async function getEveryPlaylistItem(service, playlistId) {
     let tracks = [];
 
-    if (service === "spotify") {
-        let offset = 0;
-        let limit = 100;
-
-        try {
+    try {
+        if (service === "spotify") {
+            let offset = 0;
+            const limit = 100;
+    
             while (true) {
-                let endpoint = `?offset=${offset}&limit=${limit}`;
+                const endpoint = `?offset=${offset}&limit=${limit}`;
+                const response = await getPlaylistItems(service, playlistId, endpoint);
 
-                // Get another tracks
-                let response = await getPlaylistItems(service, playlistId, endpoint);
                 tracks = tracks.concat(response['items'], []);
-
-                // Update values
+                
                 offset += limit;
-
-                // Check if there's more
                 if (offset >= response['total']) break;
-             }
+            }
         }
-        catch (error) {
-            console.error(error);
-        }
-    }
-    else if (service === "youtube") {
-        let nextPageToken = null;
+        else if (service === "youtube") {
+            let nextPageToken = null;
 
-        try {
-            while (true) {
-                let endpoint = '';
-                if (nextPageToken) {
-                    endpoint += `&pageToken=${nextPageToken}`;
-                }
+            do {
+                const endpoint = nextPageToken ? `&pageToken=${nextPageToken}` : '';
+                const response = await getPlaylistItems(service, playlistId, endpoint);
 
-                // Get another tracks
-                let response = await getPlaylistItems(service, playlistId, endpoint);
                 tracks = tracks.concat(response['items'], []);
-                
-                // Update values
                 nextPageToken = response['nextPageToken'];
-                
-                // Check if there's more
-                if (!nextPageToken) break;
-             }
+            } while (nextPageToken);
+        } else {
+            throw new Error("Unsupported service type.");
         }
-        catch (error) {
-            console.error(error);
-        }
-    } else throw new Error("Unsupported service type");
+    } catch (error) {
+        console.error(`Failed to get playlist items for service ${service}.`)
+    }
 
     return tracks;
 }
 
 // ##### create playlist #####
 export async function createPlaylist(service, title, description, isSetToPublic) {
-    let createdPlaylist, access_token;
+    let createdPlaylist;
 
-    if (service === "youtube") access_token = await getUserAccessToken("spotify");
-    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
+    const access_token = await getUserAccessToken(service === "youtube" ? "spotify" : "youtube");
     
-    if (service === "youtube") { // create playlist on spotify
-        const userId = await getUserProfileId("spotify");
-
-        try {
+    try {
+        if (service === "youtube") { // create playlist on spotify
+            const userId = await getUserProfileId("spotify");
+    
             createdPlaylist = await fetch(BASE_URL_SPOTIFY + `users/${userId}/playlists`, {
                 method: 'POST',
                 headers: {
@@ -170,14 +152,9 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                 })
             }).catch(error => console.error(error)); // errors strictly in promises
         }
-        catch (error) {
-            console.error(error);
-        }
-    }
-    else if (service === "spotify") { // create playlist on youtube
-        let privacyStatus = (isSetToPublic === true) ? "public" : "private";
-
-        try {
+        else if (service === "spotify") { // create playlist on youtube
+            const privacyStatus = isSetToPublic ? "public" : "private";
+    
             createdPlaylist = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
                 'part': 'snippet',
                 'key': access_token['api_key_yt']
@@ -198,15 +175,16 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                     // },
                 })
             }).catch(error => console.error(error)); // errors strictly in promises
+        } else {
+            throw new Error("Unsupported service type");
         }
-        catch (error) {
-            console.error(error);
-        }
-    } else throw new Error("Unsupported service type");
+    } catch (error) {
+        console.error('Failed to create a playlist.');
+    }
+    
+    const playlistData = await createdPlaylist.json();
 
-    createdPlaylist = await createdPlaylist.json();
-
-    return createdPlaylist['id'];
+    return playlistData['id'];
 }
 
 // ##### get ID for every searched track/video #####
@@ -215,80 +193,64 @@ export async function searchTracksForItsId(service, items) {
         'searchedTracks': [],
         'failedTracks': [],
     };
-    let track, response, access_token;
 
-    if (service === "youtube") access_token = await getUserAccessToken("spotify");
-    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
+    try {
+        const access_token = await getUserAccessToken(service === "youtube" ? "spotify" : "youtube");
 
-    if (service === "youtube") { // search for spotify tracks
-        for (const item in items) {
-            track = items[item];
+        for (const item of items) {
+            if (!item['isChecked']) continue;
 
-            if (track['isChecked']) {
-                try {
-                    response = await fetch(BASE_URL_SPOTIFY + 'search?' + new URLSearchParams({
-                        'type': 'track',
-                        'limit': 1,
-                        'q': track['title'] + " " + track['artist'],
-                    }), {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + access_token['access_token'],
-                            'Content-Type': 'application/json'
-                        }
-                    }).catch(error => { // errors strictly in promises
-                        console.error(error);
-                        tracks['failedTracks'].push(track);
-                    }); 
-                    
-                    let responseJson = await response.json();
-                    
-                    // create uris to add multiple track at once
-                    responseJson = responseJson['tracks']['items'][0]['id'];
-                    
-                    tracks['searchedTracks'].push('spotify:track:' + responseJson);
-                }
-                catch (error) {
-                    console.error(error);
-                    tracks['failedTracks'].push(track);
-                }
+            // Create a query
+            let query, url, headers;
+            if (service === "youtube") {
+                query = new URLSearchParams({
+                    'type': 'track',
+                    'limit': 1,
+                    'q': `${item['title']} ${item['artist']}`,
+                });
+                url = BASE_URL_SPOTIFY + 'search?' + query.toString();
+                headers = {
+                    'Authorization': 'Bearer ' + access_token['access_token'],
+                    'Content-Type': 'application/json'
+                };
+            } else if (service === "spotify") {
+                query = new URLSearchParams({
+                    'part': 'snippet',
+                    'maxResults': 1,
+                    'type': 'video',
+                    'q': `${item['title']} ${item['artist']}`,
+                    'key': access_token['api_key_yt']
+                });
+                url = BASE_URL_YOUTUBE + 'search?' + query.toString();
+                headers = {
+                    'Authorization': 'Bearer ' + access_token['access_token'],
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                };
+            } else {
+                throw new Error("Unsupported service type");
             }
-        }
-    }
-    if (service === "spotify") { // search for youtube tracks
-        for (const item in items) {
-            track = items[item];
 
-            if (track['isChecked']) {
-                try {
-                    response = await fetch(BASE_URL_YOUTUBE + 'search?' + new URLSearchParams({
-                        'part': 'snippet',
-                        'maxResults': 1,
-                        'type': 'video',
-                        'q': track['title'] + " " + track['artist'],
-                        'key': access_token['api_key_yt']
-                    }), {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + access_token['access_token'],
-                            'Accept': 'application/json',
-                        }
-                    }).catch(error => { // errors strictly in promises
-                        console.error(error);
-                        tracks['failedTracks'].push(track);
-                    }); 
+            // Call the API
+            try {
+                const response = await fetch(url, { method: 'GET', headers });
+
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 
-                    const responseJson = await response.json();
-
-                    tracks['searchedTracks'].push(responseJson);
+                const responseData = await response.json();
+                if (service === "youtube") {
+                    const trackId = responseData['tracks']['items'][0]['id'];
+                    tracks['searchedTracks'].push('spotify:track:' + trackId);
+                } else if (service === "spotify") {
+                    tracks['searchedTracks'].push(responseData);
                 }
-                catch (error) {
-                    console.error(error);
-                    tracks['failedTracks'].push(track);
-                }
+            } catch (error) {
+                console.error(`Failed to search track for ${item['title']} by ${item['artist']}: ${error.message}`);
+                tracks['failedTracks'].push(item);
             }
         }
+    } catch (error) {
+        console.error(`Failed to get access token for service ${service}: ${error.message}`);
     }
 
     return tracks;
@@ -302,21 +264,19 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
     const progressDenominator = document.querySelector('#progress-denominator');
     const progressPercentage = document.querySelector('#progress-percentage');
     
-    let track, response, access_token;
-    if (service === "youtube") access_token = await getUserAccessToken("spotify");
-    else if (service === "spotify") access_token = await getUserAccessToken("youtube");
-
     progressDenominator.innerHTML = tracks.length;
 
-    if (service === "youtube") { // add tracks on spotify
-        // max size of items to add to playlist at once
-        let chunkSize = 100;
-        let items;
+    let track, response;
+    const access_token = await getUserAccessToken(service === "youtube" ? "spotify" : "youtube");
 
-        for (let i = 0, l = tracks.length; i < l; i += chunkSize) {
-            items = tracks.slice(i, i + chunkSize);
-            
-            try {
+    try {
+        if (service === "youtube") {
+            // Add tracks on spotify (100 per 1 api call)
+            const chunkSize = 100;
+    
+            for (let i = 0, l = tracks.length; i < l; i += chunkSize) {
+                const items = tracks.slice(i, i + chunkSize);
+                
                 response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks`, {
                     method: 'POST',
                     headers: {
@@ -324,29 +284,16 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        'uris': items
-                    })
+                    body: JSON.stringify({ 'uris': items })
                 }).catch(error => console.error(error)); // errors strictly in promises
-                console.log(response);
             }
-            catch (error) {
-                console.error(error);
-            }
-
-            // on bigger playlists causing bugs when transfering
-            // (if app is open during transfer) 
-            // update convertion progress
-            // progressNominator.innerHTML = items.length;
-            // progressPercentage.innerHTML = Math.round(100 * items.length / tracks.length);
         }
-    }
-    if (service === "spotify") { // add tracks on youtube
-        for (const item in tracks) {
-            track = tracks[item];
-            let trackId = track['items'][0]['id']['videoId'];
-
-            try {
+        if (service === "spotify") {
+            // Add tracks on youtube
+            for (const item in tracks) {
+                track = tracks[item];
+                const trackId = track['items'][0]['id']['videoId'];
+    
                 response = await fetch(BASE_URL_YOUTUBE + 'playlistItems?' + new URLSearchParams({
                     'part': 'snippet',
                     'key': access_token['api_key_yt']
@@ -367,15 +314,14 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
                         },
                     })
                 }).catch(error => console.error(error)); // errors strictly in promises
-            }
-            catch (error) {
-                console.error(error);
-            }
 
-            // update convertion progress
-            progressNominator.innerHTML = parseInt(item) + 1;
-            progressPercentage.innerHTML = Math.round(100 * (parseInt(item) + 1) / tracks.length);
+                // update convertion progress
+                progressNominator.innerHTML = parseInt(item) + 1;
+                progressPercentage.innerHTML = Math.round(100 * (parseInt(item) + 1) / tracks.length);
+            }
         }
+    } catch (error) {
+        console.error("Failed to add items to playlist.");
     }
 }
 

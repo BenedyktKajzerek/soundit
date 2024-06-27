@@ -343,6 +343,7 @@ function deletePlaylist(playlistsToDelete) {
         // hide modal
         modal.classList.remove('open-modal');
         modalContainerDelete.classList.remove('display-block');
+        location.reload();
     });
 }
 
