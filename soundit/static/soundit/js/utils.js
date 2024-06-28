@@ -19,13 +19,13 @@ export function authenticateService(service) {
             });
         }
     })
-    .catch(error => console.error(error));
+    .catch(error => console.error("Failed to authenticate service."));
 }
 
 // Get user's access token (needed for api calls)
 async function getUserAccessToken(service) {
     const response = await fetch(`get_user_access_token/${service}`)
-    .catch(error => console.error(error)); // errors strictly in promises
+    .catch(error => console.error("Failed to get user access token.")); // errors strictly in promises
 
     // Check server HTTP response (status code 200-299)
     if (!response.ok) throw new Error(`An error has occured: ${response.status}`);
@@ -42,7 +42,7 @@ async function getUserProfileId(service) {
     const response = await fetch(BASE_URL_SPOTIFY + 'me', {
         method: 'GET',
         headers: {'Authorization': 'Bearer ' + access_token['access_token']}
-    }).catch(error => console.error(error)); // errors strictly in promises
+    }).catch(error => console.error("Failed to get user profile id for YouTube.")); // errors strictly in promises
     
     // Check server HTTP response (status code 200-299)
     if (!response.ok) throw new Error(`An error has occured: ${response.status}`);
@@ -63,7 +63,7 @@ async function getPlaylistItems(service, playlistId, endpoint) {
         response = await fetch(BASE_URL_SPOTIFY + `playlists/${playlistId}/tracks` + endpoint, {
             method: 'GET',
             headers: {'Authorization': 'Bearer ' + access_token['access_token']},
-        }).catch(error => console.error(error)); // errors strictly in promises
+        }).catch(error => console.error(`Failed to get playlist items for ${service}.`)); // errors strictly in promises
     }
     else if (service === "youtube") {
         response = await fetch(BASE_URL_YOUTUBE + 'playlistItems?' + new URLSearchParams({
@@ -77,7 +77,7 @@ async function getPlaylistItems(service, playlistId, endpoint) {
                 'Authorization': 'Bearer ' + access_token['access_token'],
                 'Accept': 'application/json',
             },
-        }).catch(error => console.error(error)); // errors strictly in promises
+        }).catch(error => console.error(`Failed to get playlist items for ${service}.`)); // errors strictly in promises
     } else throw new Error("Unsupported service type");
 
     // Check server HTTP response (status code 200-299)
@@ -150,7 +150,7 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                     'description': description,
                     'public': isSetToPublic
                 })
-            }).catch(error => console.error(error)); // errors strictly in promises
+            }).catch(error => console.error("Failed to create playlist.")); // errors strictly in promises
         }
         else if (service === "spotify") { // create playlist on youtube
             const privacyStatus = isSetToPublic ? "public" : "private";
@@ -174,16 +174,17 @@ export async function createPlaylist(service, title, description, isSetToPublic)
                     //     "privacyStatus": privacyStatus
                     // },
                 })
-            }).catch(error => console.error(error)); // errors strictly in promises
+            }).catch(error => console.error("Failed to create playlist.")); // errors strictly in promises
         } else {
             throw new Error("Unsupported service type");
         }
+
+        await updateAppStats("playlists", 1);
     } catch (error) {
         console.error('Failed to create a playlist.');
     }
     
     const playlistData = await createdPlaylist.json();
-
     return playlistData['id'];
 }
 
@@ -238,6 +239,7 @@ export async function searchTracksForItsId(service, items) {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 
                 const responseData = await response.json();
+                
                 if (service === "youtube") {
                     const trackId = responseData['tracks']['items'][0]['id'];
                     tracks['searchedTracks'].push('spotify:track:' + trackId);
@@ -285,7 +287,7 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ 'uris': items })
-                }).catch(error => console.error(error)); // errors strictly in promises
+                }).catch(error => console.error("Failed to add items to playlist.")); // errors strictly in promises
             }
         }
         if (service === "spotify") {
@@ -313,13 +315,15 @@ export async function addItemsToPlaylist(service, playlistId, tracks) {
                             }
                         },
                     })
-                }).catch(error => console.error(error)); // errors strictly in promises
+                }).catch(error => console.error("Failed to add items to playlist.")); // errors strictly in promises
 
                 // update convertion progress
                 progressNominator.innerHTML = parseInt(item) + 1;
                 progressPercentage.innerHTML = Math.round(100 * (parseInt(item) + 1) / tracks.length);
             }
         }
+
+        await updateAppStats("tracks", tracks.length);
     } catch (error) {
         console.error("Failed to add items to playlist.");
     }
@@ -336,7 +340,7 @@ export async function deletePlaylistAPI(service, playlistId) {
             headers: {
                 'Authorization': 'Bearer ' + access_token['access_token'],
             }
-        }).catch(error => console.error(error)); // errors strictly in promises
+        }).catch(error => console.error("Failed to delete playlist.")); // errors strictly in promises
     }
     else if (service === "youtube") {
         response = await fetch(BASE_URL_YOUTUBE + 'playlists?' + new URLSearchParams({
@@ -349,6 +353,40 @@ export async function deletePlaylistAPI(service, playlistId) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).catch(error => console.error(error)); // errors strictly in promises
+        }).catch(error => console.error("Failed to delete playlist.")); // errors strictly in promises
     }
+
+    await updateAppStats("delete", 1);
+}
+
+async function updateAppStats(action, value) {
+    await fetch('/profile/update_appstats', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'), // Function to get the CSRF token from cookies
+        },
+        body: JSON.stringify({
+            action: action,
+            value: value
+        }),
+        dataType: "json"
+    }).catch(error => console.error("Failed to update app stats."))
+}
+
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }

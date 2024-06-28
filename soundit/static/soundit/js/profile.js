@@ -331,20 +331,20 @@ function updateProgressModal(service) {
     }
 }
 
-function deletePlaylist(playlistsToDelete) {
-    playlistsToDelete.forEach(playlist => {
+async function deletePlaylist(playlistsToDelete) {
+    for (const playlist of playlistsToDelete) {
         // get playlist data
         let service = playlist.dataset.service;
         let playlistId = playlist.dataset.playlistid;
 
         // delete playlists
-        deletePlaylistAPI(service, playlistId);
+        await deletePlaylistAPI(service, playlistId);
+    }
 
-        // hide modal
-        modal.classList.remove('open-modal');
-        modalContainerDelete.classList.remove('display-block');
-        location.reload();
-    });
+    // hide modal
+    modal.classList.remove('open-modal');
+    modalContainerDelete.classList.remove('display-block');
+    location.reload();
 }
 
 // ##### EventListeners #####

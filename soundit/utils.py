@@ -48,18 +48,12 @@ def create_or_update_user_token(user, service, access_token, token_type, expires
 
     if token:
         # Update
-        # token.save() -> then change values -> then update_fields
-        # token.save()
         token.access_token = access_token
         token.save()
         token.token_type = token_type
         token.save()
         token.expires_in = expires_in
         token.save()
-        # token.refresh_token = refresh_token
-        # token.save()
-        # This leaves an error (why?)
-        # token.save(update_fields=['access_token', 'token_type', 'expires_in', 'refresh_token'])
     else: 
         # Create token
         if service in token_classes:

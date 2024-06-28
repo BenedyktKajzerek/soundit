@@ -10,7 +10,6 @@ urlpatterns = [
 
     # WebApp (when user is logged in)
     path('profile/', views.profile, name='profile'),
-
     path('profile/get_user_access_token/<str:service>', views.get_user_access_token),
  
     # API related (Spotify)
@@ -22,4 +21,7 @@ urlpatterns = [
     path('profile/youtube/get-auth-url', views.YouTubeAuthURL.as_view()),
     path('profile/youtube/callback', views.youtube_callback),
     path('profile/youtube/is-authenticated', views.YouTubeIsAuthenticated.as_view()),
+
+    # Update AppStats
+    path('profile/update_appstats', views.update_appstats),
 ]

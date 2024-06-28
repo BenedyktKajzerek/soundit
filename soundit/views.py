@@ -14,12 +14,13 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 from django.http import JsonResponse
+import json
 
 from django.utils import timezone
 from datetime import timedelta
 
 from .utils import *
-from .models import User, SpotifyToken, YouTubeToken
+from .models import User, SpotifyToken, YouTubeToken, AppStats
 
 # Get credentials from .env
 from dotenv import load_dotenv
@@ -145,8 +146,17 @@ def index(request):
     # Redirect to profile if logged in
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('profile'))
+    
+    data = AppStats.objects.first()
+    app_stats = {
+        "tracks": data.transfered_tracks,
+        "playlists": data.transfered_playlists, 
+        "deleted": data.deleted_playlists
+    }
 
-    return render(request, "soundit/index.html")
+    return render(request, "soundit/index.html", {
+        'app_stats': app_stats
+    })
 
 
 def login_view(request):
@@ -207,9 +217,13 @@ def profile(request):
     is_spotify_connected = SpotifyToken.objects.only('user').filter(user=request.user).exists()
     is_youtube_connected = YouTubeToken.objects.only('user').filter(user=request.user).exists()
     
+    data = User.objects.get(username=request.user.username)
     general = {
         'user': {
             'username': request.user.username,
+            'tracks': data.transfered_tracks,
+            'playlists': data.transfered_playlists,
+            'deleted': data.deleted_playlists
         },
         'services': {
             'is_spotify_connected': is_spotify_connected,
@@ -270,3 +284,35 @@ def get_user_access_token(request, service):
         response['api_key_yt'] = API_KEY_YT
 
     return JsonResponse(response)
+
+def update_appstats(request):
+    if request.method == 'POST':
+            try:
+                data = json.loads(request.body)
+                action = data.get('action', 0)
+                value = data.get('value', 0)
+
+                user_stats = User.objects.get(username=request.user.username)
+                app_stats = AppStats.objects.first()
+
+                if not app_stats:
+                    app_stats = AppStats() # Create a new instance if it doesn't exist
+
+                # Update the fields
+                if action == "tracks":
+                    app_stats.transfered_tracks += value
+                    user_stats.transfered_tracks += value
+                elif action == "playlists":
+                    app_stats.transfered_playlists += value
+                    user_stats.transfered_playlists += value
+                elif action == "delete":
+                    app_stats.deleted_playlists += value
+                    user_stats.deleted_playlists += value
+
+                user_stats.save()
+                app_stats.save()
+            
+                return JsonResponse({'status': 'success'})
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'invalid method'}, status=405)

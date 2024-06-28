@@ -10,8 +10,9 @@ class AppStats(models.Model):
         return f'{self.transfered_tracks} {self.transfered_playlists} {self.deleted_playlists}'
 
 class User(AbstractUser):
-    transfered_playlists = models.IntegerField(default=0)
     transfered_tracks = models.IntegerField(default=0)
+    transfered_playlists = models.IntegerField(default=0)
+    deleted_playlists = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.id} {self.username}'

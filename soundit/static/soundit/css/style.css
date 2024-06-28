@@ -37,6 +37,12 @@ body {
 
 /* === Scrollbar === */
 
+/* for Firefox */
+* {
+    scrollbar-width: auto;          /* "auto" or "thin" */
+    scrollbar-color: var(--grey) var(--bg2);  /* thumb and track color */
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 14px;
