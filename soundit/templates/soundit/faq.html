@@ -1,0 +1,165 @@
+{% extends "soundit/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'soundit/css/faq.css' %}">
+{% endblock %}
+
+{% block body %}
+    <section class="questions">
+
+        <div class="title">
+            <h2>FAQ</h2>
+        </div>
+
+        <div class="section-center">
+
+        <article class="question">
+
+            <div class="question-title">
+                <p>How to use Soundit?</p>
+
+                <button type="button" class="question-btn">
+                    <span class="plus-icon">
+                        <i class="far fa-plus-square"></i>
+                    </span>
+                    <span class="minus-icon">
+                        <i class="far fa-minus-square"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="question-text">
+                <p>
+                    To transfer your music between streaming services you just need to follow 4 simple steps: <br>
+                    1) Create an account and connect with streaming services. <br>
+                    2) Select playlists you want to transfer. <br>
+                    3) Edit title/description, select which songs you want to transfer. <br>
+                    4) Click 'convert' and enjoy your music! 
+                </p>
+            </div>
+        </article>
+
+        <article class="question">
+
+            <div class="question-title">
+                <p>What streaming services does Soundit support?</p>
+
+                <button type="button" class="question-btn">
+                    <span class="plus-icon">
+                        <i class="far fa-plus-square"></i>
+                    </span>
+                    <span class="minus-icon">
+                        <i class="far fa-minus-square"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="question-text">
+                <p>
+                    You can see the complete list of streaming services that Soundit supports on our home page.
+                    For now, we support Spotify and YouTube. But don't worry! 
+                    We're planning on adding some more in the future. 
+                </p>
+            </div>
+        </article>
+
+        <article class="question">
+        
+            <div class="question-title">
+                <p>Is Soundit free?</p>
+
+                <button type="button" class="question-btn">
+                    <span class="plus-icon">
+                        <i class="far fa-plus-square"></i>
+                    </span>
+                    <span class="minus-icon">
+                        <i class="far fa-minus-square"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="question-text">
+                <p>
+                    Yes! Soundit is 100% free to use for everyone.
+                    You can transfer or delete your playlists anytime you want!
+                </p>
+            </div>
+        </article>
+
+        <article class="question">
+        
+            <div class="question-title">
+                <p>How do I remove Soundit access to Spotify or YouTube service?</p>
+
+                <button type="button" class="question-btn">
+                    <span class="plus-icon">
+                        <i class="far fa-plus-square"></i>
+                    </span>
+                    <span class="minus-icon">
+                        <i class="far fa-minus-square"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="question-text">
+                <p>
+                    To remove Soundit access to other services, 
+                    please go to the settings or your profile page. 
+                    There you will see two links to disconnect with music service.
+                </p>
+            </div>
+        </article>
+
+        <article class="question">
+        
+            <div class="question-title">
+                <p>Does Soundit remove your playlists from the source platform?</p>
+
+                <button type="button" class="question-btn">
+                    <span class="plus-icon">
+                        <i class="far fa-plus-square"></i>
+                    </span>
+                    <span class="minus-icon">
+                        <i class="far fa-minus-square"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="question-text">
+                <p>
+                    No! We are just copying your music to the new platform, 
+                    We do not change or delete anything on the source platform.
+                </p>
+            </div>
+        </article>
+
+        <article class="question">
+        
+            <div class="question-title">
+                <p>When the transfer is finished, will it show a list of songs that did not transfer?</p>
+
+                <button type="button" class="question-btn">
+                    <span class="plus-icon">
+                        <i class="far fa-plus-square"></i>
+                    </span>
+                    <span class="minus-icon">
+                        <i class="far fa-minus-square"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="question-text">
+                <p>
+                    Yes, the songs that failed to transfer will be listed at the end of the process.
+                </p>
+            </div>
+        </article>
+
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'soundit/js/faq.js' %}"></script>
+{% endblock %}

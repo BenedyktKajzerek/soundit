@@ -262,7 +262,7 @@ body {
 .main-wrapper {
     position: relative;
     height: 100%;
-    width: calc(100% - 260px);
+    width: 100%;
 }
 
 .main {
@@ -880,12 +880,24 @@ body {
         width: 0;
     }
 
-    .main-wrapper {
-        width: 100%;
-    }
-
     .hamburger {
         display: block;
+    }
+}
+
+@media all and (max-width: 1300px) {
+    .tracks,
+    .tracks-filter,
+    .public,
+    .public-filter {
+        width: 200px;
+    }
+}
+
+@media all and (max-width: 768px) {
+    .platform,
+    .platform-filter {
+        min-width: 300px;
     }
 }
 

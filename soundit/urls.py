@@ -7,6 +7,7 @@ urlpatterns = [
     path('logout', views.logout_view, name='logout'),
     path('register', views.register, name='register'),
     path('about', views.about, name='about'),
+    path('faq', views.faq, name='faq'),
 
     # WebApp (when user is logged in)
     path('profile/', views.profile, name='profile'),

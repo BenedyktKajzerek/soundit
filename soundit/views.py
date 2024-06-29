@@ -210,6 +210,14 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "soundit/register.html")
+    
+
+def about(request):
+    return render(request, "soundit/about.html")
+
+
+def faq(request):
+    return render(request, "soundit/faq.html")
 
 
 @login_required
@@ -274,9 +282,6 @@ def update_general_statistics(playlists, service_name, general_stats):
     general_stats[service_name]['tracks'] += total_tracks
 
 
-def about(request):
-    return render(request, "soundit/about.html")
-
 def get_user_access_token(request, service):
     response = {'access_token': get_user_token(request.user, service).access_token}
 
@@ -284,6 +289,7 @@ def get_user_access_token(request, service):
         response['api_key_yt'] = API_KEY_YT
 
     return JsonResponse(response)
+
 
 def update_appstats(request):
     if request.method == 'POST':
