@@ -1,7 +1,38 @@
 main {
-    padding-top: 152px;
-    text-align: center;
+    position: relative;
+    width: 100%;
     height: 100vh;
+    padding-top: 152px;
     font-size: 52px;
     font-weight: 700;
+    background: url("/static/soundit/media/background-about.png");
+    color: var(--white);
+}
+
+main div {
+    height: 200px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 62px;
+}
+
+h1 span {
+    color: var(--primary);
+}
+
+p {
+    font-size: 18px;
+    margin-top: 42px;
+    font-weight: 500;
+    max-width: 600px;
+}
+
+#poland {
+    background: linear-gradient(white, red);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }

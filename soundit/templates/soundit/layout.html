@@ -36,10 +36,10 @@
         <nav class="nav">
             <ul>
                 <li style="--i:0;">
-                    <a href="">Transfer</a>
+                    <a href="{% url 'profile' %}">Transfer</a>
                 </li>
                 <li style="--i:1;">
-                    <a href="">About</a>
+                    <a href="{% url 'about' %}">About</a>
                 </li>
                 <li style="--i:2;">
                     <a href="{% url 'login' %}" class="btn-login">Log in</a>
@@ -68,7 +68,7 @@
             <div class="footer-links">
                 <ul>
                     <li>
-                        <a href="{% url 'about' %}">About us</a>
+                        <a href="{% url 'about' %}">About</a>
                     </li>
                     <li>
                         <a href="{% url 'faq' %}">FAQ</a>
