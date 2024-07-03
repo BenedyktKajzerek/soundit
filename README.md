@@ -69,3 +69,4 @@ The Soundit web applications was built using following technologies:
 - Install necessary packages: `pip install -r requirements.txt`
 - run `python manage.py runserver`
 - ...
+
