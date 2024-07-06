@@ -795,7 +795,8 @@ body {
     width: 668px;
 }
 
-#tracks-container {
+#tracks-container,
+#failed-tracks-container {
     height: 522px;
     margin-bottom: 16px;
     overflow-y: scroll;
