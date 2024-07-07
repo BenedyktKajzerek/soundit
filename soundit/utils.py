@@ -66,16 +66,26 @@ def create_or_update_user_token(user, service, access_token, token_type, expires
                 refresh_token=refresh_token
             )
             token.save()
-        
+
 
 def is_authenticated(user, service):
     token = get_user_token(user, service)
 
-    if token:
-        expires = token.expires_in
-        if expires <= timezone.now():
-            refresh_token(user, service)
+    # check if user revoked access
+    if service == "youtube":
+        response = requests.get(f'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={token}')
+    elif service == "spotify":
+        response = requests.get('https://api.spotify.com/v1/me', headers={
+            "Authorization": f"Bearer {token}"
+        })
 
+    # if user has indeed revoked access
+    if response.status_code != 200:
+        return False
+
+    if token:
+        if token.expires_in <= timezone.now():
+            refresh_token(user, service)
         return True
 
     return False

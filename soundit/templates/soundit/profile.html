@@ -39,7 +39,7 @@
                                 <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
                             </div>
                         {% endif %}
-                        {% if general.services.is_spotify_connected %}
+                        {% if general.services.is_youtube_connected %}
                             <div class="service">
                                 <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
                             </div>
@@ -48,16 +48,12 @@
 
                     <div>
                         <div class="services-to-connect">
-                            {% if general.services.is_spotify_connected == False %}
                                 <div class="service" id="add-spotify">
                                     <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
                                 </div>
-                            {% endif %}
-                            {% if general.services.is_youtube_connected == False %}
                                 <div class="service" id="add-youtube">
                                     <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
                                 </div>
-                            {% endif %}
                         </div>
                         
                         <div class="add-service service" title="Add service">
