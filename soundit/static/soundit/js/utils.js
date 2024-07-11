@@ -3,11 +3,11 @@ const BASE_URL_YOUTUBE = "https://www.googleapis.com/youtube/v3/";
 
 // ##### API Connection for Spotify/Youtube #####
 export function authenticateService(service) {
-    fetch(`/profile/${service}/is-authenticated`)
-    .then(response => response.json())
-    .then(data => {
+    // fetch(`/profile/${service}/is-authenticated`)
+    // .then(response => response.json())
+    // .then(data => {
 
-        if (!data.status) {
+    //     if (!data.status) {
             fetch(`/profile/${service}/get-auth-url`)
             .then(response => response.json())
             .then(data => {
@@ -17,9 +17,9 @@ export function authenticateService(service) {
                 else if (service === "youtube") window.location.replace(data.url[0]);
                 else throw new Error("Unsupported service type");
             });
-        }
-    })
-    .catch(error => console.error("Failed to authenticate service."));
+    //     }
+    // })
+    // .catch(error => console.error("Failed to authenticate service."));
 }
 
 // Get user's access token (needed for api calls)

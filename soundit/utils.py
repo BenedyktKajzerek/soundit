@@ -71,20 +71,9 @@ def create_or_update_user_token(user, service, access_token, token_type, expires
 def is_authenticated(user, service):
     token = get_user_token(user, service)
 
-    # check if user revoked access
-    if service == "youtube":
-        response = requests.get(f'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={token}')
-    elif service == "spotify":
-        response = requests.get('https://api.spotify.com/v1/me', headers={
-            "Authorization": f"Bearer {token}"
-        })
-
-    # if user has indeed revoked access
-    if response.status_code != 200:
-        return False
-
     if token:
-        if token.expires_in <= timezone.now():
+        expires = token.expires_in
+        if expires <= timezone.now():
             refresh_token(user, service)
         return True
 
@@ -120,20 +109,6 @@ def refresh_token(user, service):
 ##### Using API #####
 
 def api_request(user, service, endpoint):
-    """
-    Make an API request to the specified service.
-
-    Args:
-        user (User): The user object.
-        service (str): The name of the service (e.g., "spotify", "youtube").
-        endpoint (str): The API endpoint to call.
-
-    Returns:
-        dict: The JSON response from the API.
-        
-    Raises:
-        requests.exceptions.RequestException: If an error occurs during the request.
-    """
     token = get_user_token(user, service)
     headers = {'Authorization': f"Bearer {token.access_token}"}
 
@@ -153,17 +128,6 @@ def api_request(user, service, endpoint):
 
 
 def get_every_youtube_playlist(user):
-    """
-    Retrieve all playlists for the given user from service.
-
-    Args:
-        user (User): The user object.
-
-    Returns:
-        dict: A dictionary containing all playlists.
-        
-    (same for get_every_spotify_playlist())
-    """
     playlists = []
     next_page_token = None
 

@@ -39,7 +39,7 @@
                                 <img src="{% static 'soundit/media/mini-logo/spotify-svgrepo-com.svg' %}" alt="spotify">
                             </div>
                         {% endif %}
-                        {% if general.services.is_youtube_connected %}
+                        {% if general.services.is_spotify_connected %}
                             <div class="service">
                                 <img src="{% static 'soundit/media/mini-logo/youtube-svgrepo-com.svg' %}" alt="youtube">
                             </div>
@@ -388,7 +388,7 @@
                     </div>
 
                     <div class="convert-content" id="tracks-container">
-                                                
+   
                         <div class="track-container">
 
                             <div class="num" id="track-number">...</div>
@@ -408,9 +408,9 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                                
-                        </div>
 
+                        </div>
+                        
                     </div>
 
                     <button class="modal-convert-btn modal-confirm-btn" value="convert">

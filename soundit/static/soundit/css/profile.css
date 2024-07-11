@@ -573,7 +573,8 @@ body {
 .modal-container-delete {
     position: relative;
     height: 700px;
-    width: 700px;
+    width: 100%;
+    max-width: 700px;
     padding: 16px;
     border-radius: 16px;
     background-color: var(--bg);
@@ -792,7 +793,7 @@ body {
 }
 
 .modal-convert-btn {
-    width: 668px;
+    width: 96%;
 }
 
 #tracks-container,
@@ -827,7 +828,7 @@ body {
 
 .track-container .playlist-title,
 .failed-track-container .playlist-title {
-    min-width: 550px;
+    max-width: 550px;
 }
 
 .track-container img,
