@@ -147,12 +147,19 @@ def index(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('profile'))
     
-    data = AppStats.objects.first()
-    app_stats = {
-        "tracks": data.transfered_tracks,
-        "playlists": data.transfered_playlists, 
-        "deleted": data.deleted_playlists
-    }
+    try: 
+        data = AppStats.objects.first()
+        app_stats = {
+            "tracks": data.transfered_tracks,
+            "playlists": data.transfered_playlists, 
+            "deleted": data.deleted_playlists
+        }
+    except AttributeError:
+        app_stats = {
+            "tracks": 0,
+            "playlists": 0, 
+            "deleted": 0
+        }
 
     return render(request, "soundit/index.html", {
         'app_stats': app_stats
