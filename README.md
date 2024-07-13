@@ -68,4 +68,5 @@ Soundit integrates with the Google (YouTube) and Spotify APIs. To enable the app
 - Clone this repository
 - Navigate to the project directory
 - Install necessary packages: `pip install -r requirements.txt`
+- run `python manage.py migrate`
 - run `python manage.py runserver`
