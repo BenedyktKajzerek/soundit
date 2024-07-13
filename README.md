@@ -6,6 +6,8 @@ Soundit is a web application that allows you to seamlessly transfer your playlis
 
 Soundit provides a unique functionality which is transfering playlists between streaming services. It allows users to edit playlist details, select specific songs for transfer, and manage API tokens.
 
+Soundit stands out for its focus on user security and data privacy. By leveraging OAuth 2.0, the application ensures secure authentication and authorization processes, allowing users to safely connect their YouTube and Spotify accounts without compromising their credentials.
+
 Soundit uses Django for authentication with OAuth to integrate with streaming services. Permissions and access control are implemented to ensure users can only manage their own data and perform authorized actions. Functions in utils.py manage API interactions, including fetching user playlists, verifying token validity, and ensuring secure communication with external services.
 
 The front-end includes a lot of dynamic functionalities and user interactions. It involves complex API interactions for user authentication and playlist fetching from connected services. Soundit is designed to be mobile-responsive, ensuring a seamless user experience on various devices.
@@ -70,3 +72,6 @@ Soundit integrates with the Google (YouTube) and Spotify APIs. To enable the app
 - Install necessary packages: `pip install -r requirements.txt`
 - run `python manage.py migrate`
 - run `python manage.py runserver`
+
+# Future Updates
+Future updates to Soundit will focus on expanding support to additional streaming services such as Apple Music or Amazon Music providing even greater flexibility for users. We also plan to introduce advanced playlist customization options, and more detailed statistics for users. User feedback will play a big role in shaping these improvements. Thank you and please stay tuned for new features and enhancements!
