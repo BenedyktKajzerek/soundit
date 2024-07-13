@@ -60,10 +60,11 @@ The Soundit web applications was built using following technologies:
     - `urls.py` - Application URLs.
     - `utils.py` - Handles user authentication with streaming services and retrieves playlists from connected services.
     - `views.py` - Contains all application views and manages user authorization with streaming services.
-  - `.env` - Necessary variables for Spotify and YouTube API.
+  - `.env` - API keys for Spotify and YouTube.
     - CLIENT_ID="", CLIENT_SECRET="", CLIENT_ID_YT="", CLIENT_SECRET_YT="", API_KEY_YT = ''
 
 # Installation
+Soundit integrates with the Google (YouTube) and Spotify APIs. To enable the application to function and obtain API keys, you must create developer apps on both platforms. These keys are already stored in a `.env` file.
 - Clone this repository
 - Navigate to the project directory
 - Install necessary packages: `pip install -r requirements.txt`
