@@ -75,3 +75,5 @@ Soundit integrates with the Google (YouTube) and Spotify APIs. To enable the app
 
 # Future Updates
 Future updates to Soundit will focus on expanding support to additional streaming services such as Apple Music or Amazon Music providing even greater flexibility for users. We also plan to introduce advanced playlist customization options, and more detailed statistics for users. User feedback will play a big role in shaping these improvements. Thank you and please stay tuned for new features and enhancements!
+
+### Video https://www.youtube.com/watch?v=Ie3oP42kSao
