@@ -1,5 +1,7 @@
 # Soundit - CS50 Web's Final Project
 
+### Video https://www.youtube.com/watch?v=Ie3oP42kSao
+
 Soundit is a web application that allows you to seamlessly transfer your playlists between different streaming services, currently supporting YouTube and Spotify. Users can select the playlist they wish to transfer, edit details such as the title and description, and choose specific songs to include in the transfer. The intuitive interface ensures a smooth and user-friendly experience, making it easy for anyone to use. Future updates will expand support to more streaming services, offering even greater flexibility.
 
 # Distinctiveness and Complexity
@@ -75,5 +77,3 @@ Soundit integrates with the Google (YouTube) and Spotify APIs. To enable the app
 
 # Future Updates
 Future updates to Soundit will focus on expanding support to additional streaming services such as Apple Music or Amazon Music providing even greater flexibility for users. We also plan to introduce advanced playlist customization options, and more detailed statistics for users. User feedback will play a big role in shaping these improvements. Thank you and please stay tuned for new features and enhancements!
-
-### Video https://www.youtube.com/watch?v=Ie3oP42kSao
